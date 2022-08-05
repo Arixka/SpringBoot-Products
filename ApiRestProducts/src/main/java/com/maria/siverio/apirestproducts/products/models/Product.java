@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Product {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt; //TODO localDateTIME y quitamos el timestamp cambialo
+    private LocalDateTime createdAt; //TODO localDateTIME y quitamos el timestamp cambialo
 
     @JoinTable(
             name = "suppliers_products",
