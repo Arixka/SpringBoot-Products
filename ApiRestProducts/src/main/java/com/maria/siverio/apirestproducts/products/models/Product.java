@@ -6,7 +6,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -35,23 +34,21 @@ public class Product {
     private Status status;
 
     @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt; //TODO localDateTIME y quitamos el timestamp cambialo
 
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "suppliers_products",
             joinColumns = @JoinColumn(name = "id_product", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "id_supplier", nullable = false)
     )
-    @ManyToMany(cascade = CascadeType.ALL)
     private List<Supplier> suppliers;
 
     public void addSupplier(Supplier supplier) {
         suppliers.add(supplier);
     }
 
-
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "prices_reductions_products",
             joinColumns = {@JoinColumn(name = "id_product")},
