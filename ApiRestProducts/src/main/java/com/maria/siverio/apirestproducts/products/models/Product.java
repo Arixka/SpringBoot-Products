@@ -1,5 +1,6 @@
-package com.maria.siverio.apirestproducts.models;
+package com.maria.siverio.apirestproducts.products.models;
 
+import com.maria.siverio.apirestproducts.products.enums.Status;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -12,28 +13,34 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "products", uniqueConstraints = @UniqueConstraint(columnNames = "item_code"))
-public class Products {
+public class Product {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "product_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
     @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq", allocationSize = 1)
     @Column(name = "id_product")
     private Long idProduct;
 
-    @Column(name = "item_code")
+
+    @Column(name = "item_code", nullable = false)
     private String itemCode;
+    @Column(nullable = false)
     private String description;
     private Double price;
-    private String state;
+
+    //enum
+    @Column(name = "status", nullable = false, length = 8)
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private Date createdAt; //TODO localDateTIME y quitamos el timestamp cambialo
 
     @JoinTable(
             name = "suppliers_products",
             joinColumns = @JoinColumn(name = "id_product", nullable = false),
-            inverseJoinColumns = @JoinColumn(name="id_supplier", nullable = false)
+            inverseJoinColumns = @JoinColumn(name = "id_supplier", nullable = false)
     )
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Supplier> suppliers;
@@ -49,7 +56,7 @@ public class Products {
             joinColumns = {@JoinColumn(name = "id_product")},
             inverseJoinColumns = {@JoinColumn(name = "id_price_reduction")}
     )
-    private List<PriceReduction>  pricesReductions;
+    private List<PriceReduction> pricesReductions;
 
     public void addSupplier(PriceReduction priceReduction) {
         pricesReductions.add(priceReduction);

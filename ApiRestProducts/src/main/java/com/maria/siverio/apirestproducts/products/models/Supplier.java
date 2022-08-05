@@ -1,4 +1,4 @@
-package com.maria.siverio.apirestproducts.models;
+package com.maria.siverio.apirestproducts.products.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
