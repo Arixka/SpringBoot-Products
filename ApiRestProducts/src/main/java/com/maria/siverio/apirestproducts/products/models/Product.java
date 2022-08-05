@@ -6,7 +6,9 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -42,7 +44,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "id_product", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "id_supplier", nullable = false)
     )
-    private List<Supplier> suppliers;
+    private Set<Supplier> suppliers = new HashSet();;
 
     public void addSupplier(Supplier supplier) {
         suppliers.add(supplier);
@@ -54,7 +56,7 @@ public class Product {
             joinColumns = {@JoinColumn(name = "id_product")},
             inverseJoinColumns = {@JoinColumn(name = "id_price_reduction")}
     )
-    private List<PriceReduction> pricesReductions;
+    private Set<PriceReduction> pricesReductions = new HashSet();;
 
     public void addSupplier(PriceReduction priceReduction) {
         pricesReductions.add(priceReduction);
