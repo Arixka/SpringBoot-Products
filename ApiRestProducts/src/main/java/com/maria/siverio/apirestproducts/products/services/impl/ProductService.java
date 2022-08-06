@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class ProductService implements IProductService {
@@ -32,10 +31,9 @@ public class ProductService implements IProductService {
         List<Product> products = productRepository.findAll();
         List<ProductDto> productDtos = new ArrayList<>();
         for (Product entity : products) {
-            productDtos.add(productMapper.toDTO(entity));
+            productDtos.add(productMapper.entityToDTO(entity));
         }
         return productDtos;
-
     }
 
     @Override
@@ -45,13 +43,13 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDto getProductById(Long id) {
-        return productMapper.toDTO(productRepository.findById(id).orElse(null));
+        return productMapper.entityToDTO(productRepository.findById(id).orElse(null));
 
     }
 
     @Override
     public void saveProduct(ProductDto productDto) {
-        Product product = productMapper.toEntity(productDto);
+        Product product = productMapper.dtoToEntity(productDto);
         productRepository.save(product);
     }
 
