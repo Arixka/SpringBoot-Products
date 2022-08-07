@@ -1,4 +1,4 @@
-package com.maria.siverio.apirestproducts.products.models;
+package com.maria.siverio.apirestproducts.users;
 
 import lombok.Data;
 

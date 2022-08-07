@@ -3,67 +3,89 @@ package com.maria.siverio.apirestproducts.products.services.impl;
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
 import com.maria.siverio.apirestproducts.products.enums.Status;
 import com.maria.siverio.apirestproducts.products.mappers.ProductMapper;
+import com.maria.siverio.apirestproducts.products.models.PriceReduction;
 import com.maria.siverio.apirestproducts.products.models.Product;
+import com.maria.siverio.apirestproducts.products.models.Supplier;
 import com.maria.siverio.apirestproducts.products.repositories.ProductRepository;
 import com.maria.siverio.apirestproducts.products.services.IProductService;
+import com.maria.siverio.apirestproducts.users.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class ProductService implements IProductService {
-
+    // TODO añadir excepciones y validaciones
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepository repository;
     @Autowired
-    private ProductMapper productMapper;
+    private ProductMapper mapper;
 
     public void ProductService(ProductRepository productRepository, ProductMapper productMapper) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
+        this.repository = productRepository;
+        this.mapper = productMapper;
     }
 
     @Override
     public List<ProductDto> findAll() {
-        List<Product> products = productRepository.findAll();
-        List<ProductDto> productDtos = new ArrayList<>();
-        for (Product entity : products) {
-            productDtos.add(productMapper.entityToDTO(entity));
-        }
-        return productDtos;
+        List<Product> products = repository.findAll();
+        return mapper.getListDtos(products);
     }
 
     @Override
     public List<ProductDto> findProductsByStatus(Status status) {
-        return null;
+        List<Product> products = repository.findProductsByStatus(status);
+        return mapper.getListDtos(products);
     }
 
     @Override
     public ProductDto getProductById(Long id) {
-        return productMapper.entityToDTO(productRepository.findById(id).orElse(null));
+        Product product = repository.findById(id).orElse(null);
+        return mapper.entityToDTO(product);
 
     }
 
     @Override
-    public void saveProduct(ProductDto productDto) {
-        Product product = productMapper.dtoToEntity(productDto);
-        productRepository.save(product);
+    public ProductDto getProductByItemCode(String itemCode) {
+        Product product = repository.getProductByItemCode(itemCode);
+        return mapper.entityToDTO(product);
+    }
+
+    @Override
+    public void createProduct(ProductDto productDto) {
+        Product product = mapper.dtoToEntity(productDto);
+        repository.save(product);
     }
 
     @Override
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Override
-    public void updateProduct(ProductDto productDto, Long id) {
-        Product productExists = productRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Product not found"));
-//pasar los datos del dto a un pjo y setear el productexist
-        productRepository.save(productExists);
+    public void editProduct(String itemCode, ProductDto productDto) {
+        Product productExists = repository.getProductByItemCode(itemCode);
+        if (productExists == null) {
+            new NoSuchElementException("No product with this ItemCode");
+        }
+        productExists.setDescription(productDto.getDescription());
+        productExists.setPrice(productDto.getPrice());
+        productExists.setStatus(productDto.getStatus());
+        for (Supplier supplier : productDto.getSuppliers()) {
+            productExists.addSupplier(supplier);
+        }
+        for (PriceReduction priceReduction : productDto.getPricesReductions()) {
+            productExists.addSupplier(priceReduction);
+        }
+        repository.save(productExists);
     }
+
+    @Override
+    public void desactiveProduct(String itemCode, UserDto user, String description) {
+        //TODO desactivar, añadir campo descripcion y user
+    }
+
 
 }

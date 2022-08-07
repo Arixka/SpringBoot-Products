@@ -1,13 +1,13 @@
 package com.maria.siverio.apirestproducts.products.models;
 
 import com.maria.siverio.apirestproducts.products.enums.Status;
+import com.maria.siverio.apirestproducts.users.User;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -36,7 +36,7 @@ public class Product {
     private Status status;
 
     @CreatedDate
-    private LocalDateTime createdAt; //TODO localDateTIME y quitamos el timestamp cambialo
+    private LocalDateTime createdAt;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
