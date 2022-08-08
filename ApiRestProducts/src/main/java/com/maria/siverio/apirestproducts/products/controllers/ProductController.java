@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.xml.ws.Response;
 import java.util.List;
 
@@ -24,20 +25,20 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    @GetMapping("/all") //Delete
-    private ResponseEntity<?> getAllProducts(){
+    @GetMapping("/all")
+    private ResponseEntity<List<ProductDto>> getAllProducts(){
         List<ProductDto> products = service.findAll();
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(products);
     }
 
     @GetMapping("/all/{status}")
-    private ResponseEntity<?> getAllProductsByStatus(@PathVariable Status status){
+    private ResponseEntity<List<ProductDto>> getAllProductsByStatus(@PathVariable Status status){
         List<ProductDto> products = service.findProductsByStatus(status);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(products);
     }
 
     @PostMapping("/")
-    private ResponseEntity<?> createProduct(@RequestBody ProductDto productDto){
+    private ResponseEntity<?> createProduct(@Valid @RequestBody ProductDto productDto){
         service.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Producto creado");
     }

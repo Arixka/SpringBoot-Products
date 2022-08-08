@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
+//TODO usar getter y setter y lo de abajo y añadir nombre de las tablas
 /**
  * @AllArgsConstructor
  * @NoArgsConstructor si pones data te ahorras esto

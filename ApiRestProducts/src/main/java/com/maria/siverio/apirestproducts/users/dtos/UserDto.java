@@ -16,6 +16,5 @@ import java.util.List;
 public class UserDto {
     @NotEmpty(message = "Username may not be empty")
     private String username;
-
     private List<Role> roles;
 }
