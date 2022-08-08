@@ -1,8 +1,8 @@
 package com.maria.siverio.apirestproducts.products.dtos;
 
+import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
 import com.maria.siverio.apirestproducts.products.enums.Status;
-import com.maria.siverio.apirestproducts.products.models.PriceReduction;
-import com.maria.siverio.apirestproducts.products.models.Supplier;
+import com.maria.siverio.apirestproducts.suppliers.dtos.SupplierDto;
 import com.maria.siverio.apirestproducts.users.dtos.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +28,8 @@ public class ProductDto {
     private String createdAt;
     private UserDto creatorUser;
     private Status status;
-    private Set<Supplier> suppliers = new HashSet();
-    private Set<PriceReduction> pricesReductions = new HashSet();
+    private Set<SupplierDto> suppliers = new HashSet(); //dto
+    private Set<PriceReductionDto> pricesReductions = new HashSet();
 
 
 }

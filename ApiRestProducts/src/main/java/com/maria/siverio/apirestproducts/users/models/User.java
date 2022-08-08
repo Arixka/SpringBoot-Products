@@ -1,17 +1,17 @@
-package com.maria.siverio.apirestproducts.users;
+package com.maria.siverio.apirestproducts.users.models;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-@Data
+
 //TODO usar getter y setter y lo de abajo y añadir nombre de las tablas
-/**
- * @AllArgsConstructor
- * @NoArgsConstructor si pones data te ahorras esto
- */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"})

@@ -11,13 +11,9 @@ public interface IProductService {
 
      List<ProductDto> findAll();
      List<ProductDto> findProductsByStatus(Status status);
-     ProductDto getProductById(Long id);
-     ProductDto getProductByItemCode(String itemCode);
-     void createProduct(ProductDto productDto);
-     void deleteProduct(Long id);
-     void editProduct(String itemCode, ProductDto productDto);
-
-     void desactiveProduct(String itemCode, UserDto user, String description);
+     ProductDto createProduct(ProductDto productDto);
+     ProductDto editProduct(ProductDto productDto);
+     ProductDto desactiveProduct(String itemCode, UserDto user, String description);
 
 
 }

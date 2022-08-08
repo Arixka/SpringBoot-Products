@@ -1,12 +1,11 @@
-package com.maria.siverio.apirestproducts.products.models;
+package com.maria.siverio.apirestproducts.suppliers.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -19,6 +18,6 @@ public class Supplier {
     @Column(name = "id_supplier")
     private Long idSupplier;
 
-    private String Name;
-    private String Country;
+    private String name;
+    private String country;
 }

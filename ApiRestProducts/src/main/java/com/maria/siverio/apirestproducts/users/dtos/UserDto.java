@@ -1,6 +1,6 @@
 package com.maria.siverio.apirestproducts.users.dtos;
 
-import com.maria.siverio.apirestproducts.users.Role;
+import com.maria.siverio.apirestproducts.users.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ import java.util.List;
 public class UserDto {
     @NotEmpty(message = "Username may not be empty")
     private String username;
-    private List<Role> roles;
+    private List<RoleDto> roles;
 }

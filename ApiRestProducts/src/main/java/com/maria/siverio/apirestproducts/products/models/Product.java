@@ -1,18 +1,24 @@
 package com.maria.siverio.apirestproducts.products.models;
 
+import com.maria.siverio.apirestproducts.pricereductions.PriceReduction;
 import com.maria.siverio.apirestproducts.products.enums.Status;
-import com.maria.siverio.apirestproducts.users.User;
-import lombok.*;
+import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import org.springframework.data.annotation.CreatedDate;
-
+import com.maria.siverio.apirestproducts.users.models.User;
+import lombok.*;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EnableJpaAuditing
 @Entity
 @Table(name = "products", uniqueConstraints = @UniqueConstraint(columnNames = "item_code"))
 public class Product {
@@ -62,6 +68,7 @@ public class Product {
         pricesReductions.add(priceReduction);
     }
 
+    //TODO @CreatedBy si tenemos Spring Security
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_creator", referencedColumnName = "id_user")
     private User creatorUser;

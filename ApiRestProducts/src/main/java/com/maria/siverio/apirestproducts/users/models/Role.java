@@ -1,11 +1,14 @@
-package com.maria.siverio.apirestproducts.users;
+package com.maria.siverio.apirestproducts.users.models;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "roles", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Role implements Serializable {
@@ -17,6 +20,5 @@ public class Role implements Serializable {
     private Long id;
 
     private String name;
-
 
 }
