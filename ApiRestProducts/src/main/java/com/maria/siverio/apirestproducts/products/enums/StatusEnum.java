@@ -1,6 +1,6 @@
 package com.maria.siverio.apirestproducts.products.enums;
 
-public enum Status {
+public enum StatusEnum {
     ACTIVE,
     DISCONTINUED
 }

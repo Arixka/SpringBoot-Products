@@ -1,8 +1,8 @@
 package com.maria.siverio.apirestproducts.products.controllers;
 
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
-import com.maria.siverio.apirestproducts.products.enums.Status;
-import com.maria.siverio.apirestproducts.products.services.impl.ProductService;;
+import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
+import com.maria.siverio.apirestproducts.products.services.impl.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class ProductController {
 
 
     @GetMapping("/all/{status}")
-    private ResponseEntity<List<ProductDto>> getAllProductsByStatus(@PathVariable Status status) {
+    private ResponseEntity<List<ProductDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {
         List<ProductDto> products = service.findProductsByStatus(status);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(products);
     }
@@ -49,9 +49,18 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(editProduct);
     }
 
+    @PutMapping("/desactive/{itemcode}")
+    private ResponseEntity<ProductDto> desactiveProduct(@PathVariable String itemcode, @RequestBody ProductDto productDto) {
+        ProductDto disabletProduct = service.desactiveProduct(itemcode, productDto.getReasonDeactivation());
+        if (disabletProduct == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(disabletProduct);
+    }
+
 
     /**
-     Endpoints para probar la api
+     * Endpoints para probar la api
      */
     @GetMapping("/all")
     private ResponseEntity<List<ProductDto>> getAllProducts() {

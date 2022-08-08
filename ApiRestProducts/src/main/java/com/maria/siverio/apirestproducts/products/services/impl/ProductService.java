@@ -3,7 +3,7 @@ package com.maria.siverio.apirestproducts.products.services.impl;
 import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
 import com.maria.siverio.apirestproducts.pricereductions.mapper.PriceReductionMapper;
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
-import com.maria.siverio.apirestproducts.products.enums.Status;
+import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.products.mappers.ProductMapper;
 import com.maria.siverio.apirestproducts.products.models.Product;
 import com.maria.siverio.apirestproducts.products.repositories.ProductRepository;
@@ -13,7 +13,6 @@ import com.maria.siverio.apirestproducts.suppliers.mapper.SupplierMapper;
 import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import com.maria.siverio.apirestproducts.suppliers.repositories.SupplierRepository;
 import com.maria.siverio.apirestproducts.users.models.User;
-import com.maria.siverio.apirestproducts.users.dtos.UserDto;
 import com.maria.siverio.apirestproducts.users.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ public class ProductService implements IProductService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private SupplierRepository supplierRepository;
     @Autowired
@@ -42,10 +40,6 @@ public class ProductService implements IProductService {
     @Autowired
     private SupplierMapper supplierMapper;
 
-    public void ProductService(ProductRepository productRepository, ProductMapper productMapper) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-    }
 
     @Override
     public List<ProductDto> findAll() {
@@ -62,7 +56,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductDto> findProductsByStatus(Status status) {
+    public List<ProductDto> findProductsByStatus(StatusEnum status) {
         List<Product> products = null;
         try {
             products = productRepository.findProductsByStatus(status);
@@ -76,7 +70,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.dtoToEntity(productDto);
-        product.setStatus(Status.ACTIVE); //default active
+        product.setStatus(StatusEnum.ACTIVE); //default active
         User creator = null;
         try {
             creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
@@ -96,7 +90,7 @@ public class ProductService implements IProductService {
         try {
             productExists = productRepository.getProductByItemCode(productDto.getItemCode());
 
-            if (productExists.getStatus() == Status.ACTIVE) {
+            if (productExists.getStatus() == StatusEnum.ACTIVE) {
                 productExists.setDescription(productDto.getDescription());
                 productExists.setPrice(productDto.getPrice());
 
@@ -110,9 +104,8 @@ public class ProductService implements IProductService {
                         productExists.addSupplier(supplierMapper.dtoToEntity(supplierDto));
                     }
                 }
-
                 for (PriceReductionDto priceReductionDto : productDto.getPricesReductions()) {
-                    productExists.addSupplier(priceMapper.dtoToEntity(priceReductionDto));
+                    productExists.addReduction(priceMapper.dtoToEntity(priceReductionDto));
                 }
             }
             Product editProduct = productRepository.save(productExists);
@@ -125,9 +118,16 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto desactiveProduct(String itemCode, UserDto user, String description) {
-        //TODO desactivar, añadir campo descripcion y user
-        return null;
+    public ProductDto desactiveProduct(String itemCode, String reason) {
+        try {
+            Product productExists = productRepository.getProductByItemCode(itemCode);
+            productExists.setStatus(StatusEnum.DISCONTINUED);
+            productExists.setReasonDeactivation(reason.trim());
+            return productMapper.entityToDTO(productRepository.save(productExists));
+        } catch (Exception e) {
+            log.error("Error when disable a product " + e);
+            throw new RuntimeException(e);
+        }
     }
 
 

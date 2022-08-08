@@ -29,3 +29,4 @@ INSERT INTO suppliers(id_supplier, name, country) VALUES (nextval('supplier_id_s
 
 INSERT INTO suppliers_products(id_product, id_supplier) VALUES (1, 1);
 INSERT INTO suppliers_products(id_product, id_supplier) VALUES (2, 2);
+

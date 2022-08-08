@@ -1,7 +1,7 @@
 package com.maria.siverio.apirestproducts.products.models;
 
 import com.maria.siverio.apirestproducts.pricereductions.PriceReduction;
-import com.maria.siverio.apirestproducts.products.enums.Status;
+import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import org.springframework.data.annotation.CreatedDate;
 import com.maria.siverio.apirestproducts.users.models.User;
@@ -37,9 +37,9 @@ public class Product {
     private Double price;
 
     //enum
-    @Column(name = "status", nullable = false, length = 8)
+    @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private StatusEnum status;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -64,7 +64,7 @@ public class Product {
     )
     private Set<PriceReduction> pricesReductions = new HashSet();;
 
-    public void addSupplier(PriceReduction priceReduction) {
+    public void addReduction(PriceReduction priceReduction) {
         pricesReductions.add(priceReduction);
     }
 
@@ -72,5 +72,8 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_creator", referencedColumnName = "id_user")
     private User creatorUser;
+
+    @Column(columnDefinition = "varchar(100) default ''")
+    private String reasonDeactivation;
 
 }
