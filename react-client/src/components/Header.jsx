@@ -26,7 +26,7 @@ const Header = () => {
 							<input
 								type='text'
 								className='px-2 py-1 h-8 border border-solid  border-indigo-600 rounded-full text-sm leading-snug text-indigo-700 bg-indigo-100 shadow-none outline-none focus:outline-none w-full font-normal rounded-l-none flex-1 border-l-0 placeholder-indigo-300'
-								placeholder='SearchItems'
+								placeholder='Search Items'
 							/>
 						</div>
 					</div>

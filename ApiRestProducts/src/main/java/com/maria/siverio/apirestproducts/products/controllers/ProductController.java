@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "http://127.0.0.1:5173")
+
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173/")
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
