@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
@@ -23,7 +24,6 @@ public class ProductController {
      */
     @Autowired
     private ProductService service;
-
 
     @GetMapping("/all/{status}")
     private ResponseEntity<List<ProductDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {

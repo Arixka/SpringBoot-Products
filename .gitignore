@@ -2,3 +2,5 @@
 ApiRestProducts/.mvn/
 
 .idea/
+
+react-client/node_modules/
