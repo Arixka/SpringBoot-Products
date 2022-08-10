@@ -70,6 +70,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.dtoToEntity(productDto);
+        System.out.println(product);
         product.setStatus(StatusEnum.ACTIVE);
         User creator = null;
         try {

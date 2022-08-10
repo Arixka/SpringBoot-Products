@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,9 +20,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class ProductDto {
 
-    @NotEmpty(message = "ItemCode may not be null")
+    @NotNull(message = "ItemCode may not be null")
     private String itemCode;
-    @NotEmpty(message = "Description may not be null")
+    @NotNull(message = "Description may not be null")
     private String description;
 
     private Double price;

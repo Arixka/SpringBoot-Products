@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    @NotEmpty(message = "Username may not be empty")
+    @NotNull(message = "Username may not be empty")
     private String username;
     private List<RoleDto> roles;
 }
