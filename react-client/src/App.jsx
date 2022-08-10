@@ -1,5 +1,6 @@
 import './App.css'
 import Header from './components/Header'
+import NewProduct from './components/Product/NewProduct'
 import ProductList from './components/Product/ProductList'
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
 		<div className='App'>
 			<Header />
 			<main>
+				<NewProduct />
 				<ProductList />
 			</main>
 		</div>
