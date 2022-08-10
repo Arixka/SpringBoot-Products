@@ -5,7 +5,6 @@ import ProductList from './components/Product/ProductList'
 function App() {
 	return (
 		<div className='App'>
-			{/* components */}
 			<Header />
 			<main>
 				<ProductList />
