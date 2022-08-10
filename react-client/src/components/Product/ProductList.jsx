@@ -12,7 +12,7 @@ const ProductList = () => {
 			setLoading(true)
 			try {
 				const response = await fetch(BASE_URL, {
-					method: 'Get',
+					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
 					},

@@ -70,12 +70,16 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.dtoToEntity(productDto);
-        product.setStatus(StatusEnum.ACTIVE); //default active
+        product.setStatus(StatusEnum.ACTIVE);
         User creator = null;
         try {
+            if(product.getCreatorUser()!=null){
             creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
+                product.setCreatorUser(creator);
+
+            }
             product.setCreatedAt(LocalDateTime.now());
-            product.setCreatorUser(creator);
+
             return productMapper.entityToDTO(productRepository.save(product));
         } catch (Exception e) {
             log.error("Error when creating a products " + e);
