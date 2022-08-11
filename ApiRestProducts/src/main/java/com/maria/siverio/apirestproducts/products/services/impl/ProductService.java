@@ -4,6 +4,7 @@ import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
 import com.maria.siverio.apirestproducts.pricereductions.mapper.PriceReductionMapper;
 import com.maria.siverio.apirestproducts.pricereductions.models.PriceReduction;
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+import com.maria.siverio.apirestproducts.products.dtos.ProductRequestDto;
 import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.products.mappers.ProductMapper;
@@ -20,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +31,6 @@ import java.util.Set;
 @Service
 @Slf4j
 public class ProductService implements IProductService {
-    // TODO añadir excepciones y validaciones
 
     @Autowired
     private ProductRepository productRepository;
@@ -47,7 +49,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductResponseDto> findAll() {
 
-        List<Product> products = null;
+        List<Product> products;
         try {
             products = productRepository.findAll();
             return productResponseDtos(products);
@@ -59,33 +61,7 @@ public class ProductService implements IProductService {
 
     }
 
-    public List<ProductResponseDto> productResponseDtos(List<Product> products){
-        List<ProductResponseDto> productsResponseDtos = new ArrayList<>();
-        ProductResponseDto productResponse = new ProductResponseDto();
 
-        for (Product product : products) {
-
-            productResponse.setItemCode(product.getItemCode());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setCreatorUser(product.getCreatorUser().getUsername());
-
-            Set<PriceReduction> priceReductionList = product.getPricesReductions();
-            if ( priceReductionList != null ) {
-                for ( PriceReduction priceReduction : priceReductionList ) {
-                    productResponse.addReduction( priceMapper.entityToDto( priceReduction ) );
-                }
-            }
-            Set<Supplier> suppliersList = product.getSuppliers();
-            if ( suppliersList != null ) {
-                for ( Supplier supplier : suppliersList ) {
-                    productResponse.addSupplier(supplierMapper.entitiToDto(supplier));
-                }
-            }
-            productsResponseDtos.add(productResponse);
-        }
-        return productsResponseDtos;
-    }
     @Override
     public List<ProductResponseDto> findProductsByStatus(StatusEnum status) {
 
@@ -100,21 +76,23 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
 
-        Product product = productMapper.dtoToEntity(productDto);
+        Product product = requestDtoToEntity(productRequestDto);
 
         product.setStatus(StatusEnum.ACTIVE);
-        User creator = null;
+        User creator;
         try {
             if (product.getCreatorUser() != null) {
+
                 creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
                 product.setCreatorUser(creator);
 
             }
             product.setCreatedAt(LocalDateTime.now());
 
-            return productMapper.entityToDTO(productRepository.save(product));
+            return entityToResponseDto(product);
+
         } catch (Exception e) {
             log.error("Error when creating a products " + e);
             throw new RuntimeException(e);
@@ -124,7 +102,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDto editProduct(ProductDto productDto) {
-        Product productExists = null;
+        Product productExists;
         try {
             productExists = productRepository.getProductByItemCode(productDto.getItemCode());
 
@@ -168,5 +146,69 @@ public class ProductService implements IProductService {
         }
     }
 
+    protected ProductResponseDto entityToResponseDto(Product product) {
+        if (product == null) {
+            return null;
+        }
+        ProductResponseDto productResponse = new ProductResponseDto();
+        productResponse.setItemCode(product.getItemCode());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setStatus(product.getStatus().name());//TODO revisar
+        productResponse.setCreatorUser(product.getCreatorUser().getUsername());
+        Set<PriceReduction> priceReductionList = product.getPricesReductions();
+        if (priceReductionList != null) {
+            for (PriceReduction priceReduction : priceReductionList) {
+                productResponse.addReduction(priceMapper.entityToDto(priceReduction));
+            }
+        }
+        Set<Supplier> suppliersList = product.getSuppliers();
+        if (suppliersList != null) {
+            for (Supplier supplier : suppliersList) {
+                productResponse.addSupplier(supplierMapper.entitiToDto(supplier));
+            }
+        }
+        return productResponse;
+    }
+
+    protected List<ProductResponseDto> productResponseDtos(List<Product> products) {
+        List<ProductResponseDto> productsResponseDtos = new ArrayList<>();
+        for (Product product : products) {
+            productsResponseDtos.add(entityToResponseDto(product));
+        }
+        return productsResponseDtos;
+    }
+
+    protected Product requestDtoToEntity(ProductRequestDto productRequestDto) {
+        if (productRequestDto == null) {
+            return null;
+        }
+        Product product = new Product();
+
+        product.setItemCode(productRequestDto.getItemCode());
+        product.setDescription(productRequestDto.getDescription());
+        product.setPrice(productRequestDto.getPrice());
+        User userCreator = new User();
+        userCreator.setUsername(productRequestDto.getCreatorUser());
+        product.setCreatorUser(userCreator);
+
+        PriceReduction reduction = new PriceReduction();
+        reduction.setReducedPrice(productRequestDto.getPrice());
+        reduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
+        reduction.setEndDate(stringToLocalDate(productRequestDto.getReductionEndDate()));
+        product.addReduction(reduction);
+
+        Supplier supplier = new Supplier();
+        supplier.setName(productRequestDto.getSupplierName());
+        supplier.setCountry(productRequestDto.getSupplierCountry());
+        product.addSupplier(supplier);
+
+        return product;
+    }
+
+    protected LocalDate stringToLocalDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return LocalDate.parse(date, formatter);
+    }
 
 }

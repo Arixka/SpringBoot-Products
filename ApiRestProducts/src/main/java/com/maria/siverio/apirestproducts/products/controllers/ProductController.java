@@ -1,6 +1,7 @@
 package com.maria.siverio.apirestproducts.products.controllers;
 
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+import com.maria.siverio.apirestproducts.products.dtos.ProductRequestDto;
 import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.products.services.impl.ProductService;
@@ -19,15 +20,9 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
 
-    /**
-     * Get all product by status
-     * Create item -> Active as default, mandatory ItemCode and Descrition, and current data
-     * Edit Item ->
-     * Desactive Item -> change status to Discontinued, I need column register user and reason =_=
-     */
     @Autowired
     private ProductService service;
-//TODO entra un ProductRequestDto  devolvemos un ProductResponseDto
+
     @GetMapping("/all/{status}")
     private ResponseEntity<List<ProductResponseDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {
         List<ProductResponseDto> productsResponse = service.findProductsByStatus(status);
@@ -35,13 +30,13 @@ public class ProductController {
     }
 
     @PostMapping("/")
-    private ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
-        ProductDto createProduct = service.createProduct(productDto);
+    private ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+        ProductResponseDto createProductResponse = service.createProduct(productRequestDto);
 
-        if (createProduct == null) {
+        if (createProductResponse == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(createProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createProductResponse);
     }
 
     @PutMapping("/")

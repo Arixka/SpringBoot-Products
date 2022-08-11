@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Getter
@@ -23,6 +22,7 @@ public class ProductResponseDto {
     private String description;
     private Double price;
     private String creatorUser;
+    private String status;
     private Set<SupplierDto> suppliers = new HashSet();
     public void addSupplier(SupplierDto supplier) {
         suppliers.add(supplier);

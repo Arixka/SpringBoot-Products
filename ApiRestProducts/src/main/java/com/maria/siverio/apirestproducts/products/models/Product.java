@@ -62,7 +62,7 @@ public class Product {
             joinColumns = {@JoinColumn(name = "id_product")},
             inverseJoinColumns = {@JoinColumn(name = "id_price_reduction")}
     )
-    private Set<PriceReduction> pricesReductions = new HashSet();;
+    private Set<PriceReduction> pricesReductions = new HashSet();
 
     public void addReduction(PriceReduction priceReduction) {
         pricesReductions.add(priceReduction);

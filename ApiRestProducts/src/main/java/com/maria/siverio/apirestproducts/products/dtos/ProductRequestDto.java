@@ -17,7 +17,6 @@ public class ProductRequestDto {
     private String itemCode;
     @NotNull(message = "Description may not be null")
     private String description;
-
     private Double price;
     private String creatorUser;
     private String reasonDeactivation;
