@@ -40,8 +40,8 @@ public class ProductController {
     }
 
     @PutMapping("/")
-    private ResponseEntity<ProductDto> editProduct(@Valid @RequestBody ProductDto productDto) {
-        ProductDto editProduct = service.editProduct(productDto);
+    private ResponseEntity<ProductResponseDto> editProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+        ProductResponseDto editProduct = service.editProduct(productRequestDto);
         if (editProduct == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

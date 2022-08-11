@@ -13,10 +13,7 @@ public interface IProductService {
      List<ProductResponseDto> findAll();
      List<ProductResponseDto> findProductsByStatus(StatusEnum status);
      ProductResponseDto createProduct(ProductRequestDto productRequestDto);
-     ProductDto editProduct(ProductDto productDto);
-
-     //TODO desactivar producto, necesito el itemcode del producto, para cambiarle el status y el motivo
-     //crear nueva entidad?
+     ProductResponseDto editProduct(ProductRequestDto productRequestDto);
      ProductDto desactiveProduct(String itemCode, String reason);
 
 

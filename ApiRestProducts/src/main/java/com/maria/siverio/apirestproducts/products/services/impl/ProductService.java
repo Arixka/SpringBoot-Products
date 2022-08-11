@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -101,31 +102,38 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto editProduct(ProductDto productDto) {
+    public ProductResponseDto editProduct(ProductRequestDto productRequestDto) {
+
         Product productExists;
         try {
-            productExists = productRepository.getProductByItemCode(productDto.getItemCode());
-
+            productExists = productRepository.getProductByItemCode(productRequestDto.getItemCode());
+//TODO POR AQUI
             if (productExists.getStatus() == StatusEnum.ACTIVE) {
-                productExists.setDescription(productDto.getDescription());
-                productExists.setPrice(productDto.getPrice());
+                productExists.setDescription(productRequestDto.getDescription());
+                productExists.setPrice(productRequestDto.getPrice());
 
-                Set<SupplierDto> supplierList = productDto.getSuppliers();
+//                Set<SupplierDto> supplierList = new HashSet<>();
+                Supplier supplier = new Supplier();
+                supplier.setName(productRequestDto.getSupplierName());
+                supplier.setCountry(productRequestDto.getSupplierCountry());
 
-                //usar filter con callback
-                for (SupplierDto supplierDto : supplierList) {
-                    Supplier supplier = supplierRepository.getSupplierByName(supplierDto.getName());
-                    if (!productExists.getSuppliers().contains(supplier)) {
-                        //TODO aqui mal
-                        productExists.addSupplier(supplierMapper.dtoToEntity(supplierDto));
-                    }
+                Supplier supplierExists = supplierRepository.getSupplierByName(supplier.getName());
+                if (!productExists.getSuppliers().contains(supplierExists)) {
+                    //TODO REVISAR
+                    productExists.addSupplier(supplier);
                 }
-                for (PriceReductionDto priceReductionDto : productDto.getPricesReductions()) {
-                    productExists.addReduction(priceMapper.dtoToEntity(priceReductionDto));
-                }
+                PriceReduction priceReduction = new PriceReduction();
+                priceReduction.setReducedPrice(productRequestDto.getPrice());
+                priceReduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
+                priceReduction.setEndDate((stringToLocalDate(productRequestDto.getReductionEndDate())));
+
+                //TODO REVISAR Comprobar si existe?
+                    productExists.addReduction(priceReduction);
+
             }
+            //Tenemos que guardar una entidad y devolver un ProductResponseDto
             Product editProduct = productRepository.save(productExists);
-            return productMapper.entityToDTO(editProduct);
+            return entityToResponseDto(editProduct);
 
         } catch (Exception e) {
             log.error("Error when editing a products " + e);
