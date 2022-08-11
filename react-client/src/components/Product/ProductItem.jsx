@@ -24,7 +24,7 @@ const ProductItem = ({ product }) => {
 				<td className='py-4'>{status}</td>
 				<td className='py-4'>{price}</td>
 				<td className='py-4'>{createdAt}</td>
-				<td className='py-4'>{creatorUser?.username}</td>
+				<td className='py-4'>{creatorUser}</td>
 				<td className='py-4 flex justify-center'>
 					<div className='inline-flex rounded-md shadow-sm  ' role='group'>
 						<button

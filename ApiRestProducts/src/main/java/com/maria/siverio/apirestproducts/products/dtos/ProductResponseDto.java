@@ -23,6 +23,7 @@ public class ProductResponseDto {
     private Double price;
     private String creatorUser;
     private String status;
+    private String createdAt;
     private Set<SupplierDto> suppliers = new HashSet();
     public void addSupplier(SupplierDto supplier) {
         suppliers.add(supplier);

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -85,14 +86,14 @@ public class ProductService implements IProductService {
         User creator;
         try {
             if (product.getCreatorUser() != null) {
-
                 creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
                 product.setCreatorUser(creator);
-
             }
             product.setCreatedAt(LocalDateTime.now());
 
-            return entityToResponseDto(product);
+//TODO llamar al repository y guardar
+            Product productCreated = productRepository.save(product);
+            return entityToResponseDto(productCreated);
 
         } catch (Exception e) {
             log.error("Error when creating a products " + e);
@@ -107,7 +108,7 @@ public class ProductService implements IProductService {
         Product productExists;
         try {
             productExists = productRepository.getProductByItemCode(productRequestDto.getItemCode());
-//TODO POR AQUI
+            //TODO POR AQUI
             if (productExists.getStatus() == StatusEnum.ACTIVE) {
                 productExists.setDescription(productRequestDto.getDescription());
                 productExists.setPrice(productRequestDto.getPrice());
@@ -124,11 +125,14 @@ public class ProductService implements IProductService {
                 }
                 PriceReduction priceReduction = new PriceReduction();
                 priceReduction.setReducedPrice(productRequestDto.getPrice());
-                priceReduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
-                priceReduction.setEndDate((stringToLocalDate(productRequestDto.getReductionEndDate())));
-
+                if(!productRequestDto.getReductionStartDate().equals("")){
+                    priceReduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
+                }
+                if(!productRequestDto.getReductionEndDate().equals("")){
+                    priceReduction.setEndDate((stringToLocalDate(productRequestDto.getReductionEndDate())));
+                }
                 //TODO REVISAR Comprobar si existe?
-                    productExists.addReduction(priceReduction);
+                productExists.addReduction(priceReduction);
 
             }
             //Tenemos que guardar una entidad y devolver un ProductResponseDto
@@ -159,11 +163,18 @@ public class ProductService implements IProductService {
             return null;
         }
         ProductResponseDto productResponse = new ProductResponseDto();
+        //TODO itemCode y Description obligatorios
         productResponse.setItemCode(product.getItemCode());
         productResponse.setDescription(product.getDescription());
+        if (!product.getCreatedAt().equals("")) {
+            productResponse.setCreatedAt(product.getCreatedAt().format(DateTimeFormatter
+                    .ofLocalizedDate(FormatStyle.SHORT)));
+        }
         productResponse.setPrice(product.getPrice());
-        productResponse.setStatus(product.getStatus().name());//TODO revisar
-        productResponse.setCreatorUser(product.getCreatorUser().getUsername());
+        productResponse.setStatus(product.getStatus().name());
+        if(product.getCreatorUser()!=null){
+            productResponse.setCreatorUser(product.getCreatorUser().getUsername());
+        }
         Set<PriceReduction> priceReductionList = product.getPricesReductions();
         if (priceReductionList != null) {
             for (PriceReduction priceReduction : priceReductionList) {
@@ -202,8 +213,12 @@ public class ProductService implements IProductService {
 
         PriceReduction reduction = new PriceReduction();
         reduction.setReducedPrice(productRequestDto.getPrice());
-        reduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
-        reduction.setEndDate(stringToLocalDate(productRequestDto.getReductionEndDate()));
+        if(!productRequestDto.getReductionStartDate().equals("")){
+            reduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
+        }
+        if(!productRequestDto.getReductionEndDate().equals("")){
+            reduction.setEndDate(stringToLocalDate(productRequestDto.getReductionEndDate()));
+        }
         product.addReduction(reduction);
 
         Supplier supplier = new Supplier();

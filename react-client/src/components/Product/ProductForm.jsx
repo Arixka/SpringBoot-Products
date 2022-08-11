@@ -7,21 +7,13 @@ const _product = {
 	description: '',
 	price: 0,
 	creatorUser: '',
-	reasonDeactivation: '',
-	suppliers: [
-		{
-			country: '',
-			name: '',
-		},
-	],
-	pricesReductions: [
-		{
-			reducedPrice: 0,
-		},
-	],
+	supplierName: '',
+	supplierCountry: '',
+	priceReduction: 0,
+	reductionStartDate: '',
+	reductionEndDate: '',
 }
 const ProductForm = ({ getProducts, setIsOpen }) => {
-
 	const [product, setProduct] = useState(_product)
 
 	//TODO *** ERROR al añadir la fecha de las reducciones ****
@@ -30,11 +22,11 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 			...product,
 			[e.target.name]: e.target.value,
 		})
-		console.log(e.target.name, e.target.value)
 	}
 
 	const saveProduct = async (e) => {
 		e.preventDefault()
+		console.log(product)
 
 		const response = await fetch(BASE_URL, {
 			method: 'POST',
@@ -52,7 +44,7 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 		getProducts(resProduct)
 		setIsOpen(false)
 	}
-
+ //TODO itemCode y Description obligatorios
 	return (
 		<>
 			<div className='block p-6 py-2 '>
@@ -109,7 +101,7 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 						Supplier
 					</label>
 					<input
-						name='suppliers.name'
+						name='supplierName'
 						type='text'
 						onChange={(e) => handleChange(e)}
 						className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
