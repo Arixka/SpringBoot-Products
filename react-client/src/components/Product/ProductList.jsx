@@ -44,6 +44,7 @@ const ProductList = () => {
 								<th className='px-6 py-3'>State</th>
 								<th className='px-6 py-3'>Price</th>
 								<th className='px-6 py-3'>Creation Date</th>
+								<th className='px-6 py-3'>User Creator</th>
 								<th className='px-6 py-3'>Actions</th>
 							</tr>
 						</thead>

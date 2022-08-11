@@ -1,4 +1,4 @@
-package com.maria.siverio.apirestproducts.pricereductions;
+package com.maria.siverio.apirestproducts.pricereductions.models;
 
 
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -22,6 +23,6 @@ public class PriceReduction {
     private Long idPriceReduction;
 
     private Double reducedPrice;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

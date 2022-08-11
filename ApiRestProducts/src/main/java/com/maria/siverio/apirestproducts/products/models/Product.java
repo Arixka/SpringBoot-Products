@@ -1,6 +1,6 @@
 package com.maria.siverio.apirestproducts.products.models;
 
-import com.maria.siverio.apirestproducts.pricereductions.PriceReduction;
+import com.maria.siverio.apirestproducts.pricereductions.models.PriceReduction;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import org.springframework.data.annotation.CreatedDate;

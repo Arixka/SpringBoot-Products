@@ -1,6 +1,7 @@
 package com.maria.siverio.apirestproducts.products.controllers;
 
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.products.services.impl.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,11 @@ public class ProductController {
      */
     @Autowired
     private ProductService service;
-
+//TODO entra un ProductRequestDto  devolvemos un ProductResponseDto
     @GetMapping("/all/{status}")
-    private ResponseEntity<List<ProductDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {
-        List<ProductDto> products = service.findProductsByStatus(status);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(products);
+    private ResponseEntity<List<ProductResponseDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {
+        List<ProductResponseDto> productsResponse = service.findProductsByStatus(status);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productsResponse);
     }
 
     @PostMapping("/")
@@ -66,9 +67,9 @@ public class ProductController {
      * Endpoints para probar la api
      */
     @GetMapping("/all")
-    private ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = service.findAll();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(products);
+    private ResponseEntity<List<ProductResponseDto>> getAllProducts() {
+        List<ProductResponseDto> productResponse = service.findAll();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productResponse);
     }
 
 

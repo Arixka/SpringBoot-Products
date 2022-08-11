@@ -2,7 +2,9 @@ package com.maria.siverio.apirestproducts.products.services.impl;
 
 import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
 import com.maria.siverio.apirestproducts.pricereductions.mapper.PriceReductionMapper;
+import com.maria.siverio.apirestproducts.pricereductions.models.PriceReduction;
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 import com.maria.siverio.apirestproducts.products.mappers.ProductMapper;
 import com.maria.siverio.apirestproducts.products.models.Product;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,12 +45,13 @@ public class ProductService implements IProductService {
 
 
     @Override
-    public List<ProductDto> findAll() {
+    public List<ProductResponseDto> findAll() {
 
         List<Product> products = null;
         try {
             products = productRepository.findAll();
-            return productMapper.getListDtos(products);
+            return productResponseDtos(products);
+
         } catch (Exception e) {
             log.error("Error when searching for products " + e);
             throw new RuntimeException(e);
@@ -55,12 +59,40 @@ public class ProductService implements IProductService {
 
     }
 
+    public List<ProductResponseDto> productResponseDtos(List<Product> products){
+        List<ProductResponseDto> productsResponseDtos = new ArrayList<>();
+        ProductResponseDto productResponse = new ProductResponseDto();
+
+        for (Product product : products) {
+
+            productResponse.setItemCode(product.getItemCode());
+            productResponse.setDescription(product.getDescription());
+            productResponse.setPrice(product.getPrice());
+            productResponse.setCreatorUser(product.getCreatorUser().getUsername());
+
+            Set<PriceReduction> priceReductionList = product.getPricesReductions();
+            if ( priceReductionList != null ) {
+                for ( PriceReduction priceReduction : priceReductionList ) {
+                    productResponse.addReduction( priceMapper.entityToDto( priceReduction ) );
+                }
+            }
+            Set<Supplier> suppliersList = product.getSuppliers();
+            if ( suppliersList != null ) {
+                for ( Supplier supplier : suppliersList ) {
+                    productResponse.addSupplier(supplierMapper.entitiToDto(supplier));
+                }
+            }
+            productsResponseDtos.add(productResponse);
+        }
+        return productsResponseDtos;
+    }
     @Override
-    public List<ProductDto> findProductsByStatus(StatusEnum status) {
-        List<Product> products = null;
+    public List<ProductResponseDto> findProductsByStatus(StatusEnum status) {
+
         try {
-            products = productRepository.findProductsByStatus(status);
-            return productMapper.getListDtos(products);
+            List<Product> products = productRepository.findProductsByStatus(status);
+            return productResponseDtos(products);
+
         } catch (Exception e) {
             log.error("Error when searching for products by Status " + e);
             throw new RuntimeException(e);
@@ -69,13 +101,14 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
+
         Product product = productMapper.dtoToEntity(productDto);
-        System.out.println(product);
+
         product.setStatus(StatusEnum.ACTIVE);
         User creator = null;
         try {
-            if(product.getCreatorUser()!=null){
-            creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
+            if (product.getCreatorUser() != null) {
+                creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
                 product.setCreatorUser(creator);
 
             }

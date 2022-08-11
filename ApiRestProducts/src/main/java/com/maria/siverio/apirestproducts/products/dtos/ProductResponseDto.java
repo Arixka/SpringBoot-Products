@@ -1,37 +1,34 @@
 package com.maria.siverio.apirestproducts.products.dtos;
 
 import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
-import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
+import com.maria.siverio.apirestproducts.pricereductions.models.PriceReduction;
 import com.maria.siverio.apirestproducts.suppliers.dtos.SupplierDto;
-import com.maria.siverio.apirestproducts.users.dtos.UserDto;
-import com.maria.siverio.apirestproducts.users.models.User;
+import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto {
+public class ProductResponseDto {
 
-    @NotNull(message = "ItemCode may not be null")
+
     private String itemCode;
-    @NotNull(message = "Description may not be null")
     private String description;
-
     private Double price;
-    private String createdAt;
-    private UserDto creatorUser;
-    private StatusEnum status;
-    private String reasonDeactivation;
-    private Set<SupplierDto> suppliers = new HashSet(); //dto
+    private String creatorUser;
+    private Set<SupplierDto> suppliers = new HashSet();
+    public void addSupplier(SupplierDto supplier) {
+        suppliers.add(supplier);
+    }
     private Set<PriceReductionDto> pricesReductions = new HashSet();
-
-
+    public void addReduction(PriceReductionDto priceReduction) {
+        pricesReductions.add(priceReduction);
+    }
 }

@@ -2,20 +2,35 @@ import { useState } from 'react'
 
 const BASE_URL = 'http://localhost:8080/api/product/'
 
+const _product = {
+	itemCode: '',
+	description: '',
+	price: 0,
+	creatorUser: '',
+	reasonDeactivation: '',
+	suppliers: [
+		{
+			country: '',
+			name: '',
+		},
+	],
+	pricesReductions: [
+		{
+			reducedPrice: 0,
+		},
+	],
+}
 const ProductForm = ({ getProducts, setIsOpen }) => {
-	const [product, setProduct] = useState({
-		itemCode: '',
-		description: '',
-		price: 0,
-		creatorUser: {username: ''},
-		suppliers: [{name: ''}]
-	})
-//TODO enviar usercreator y supplier por el formulario
+
+	const [product, setProduct] = useState(_product)
+
+	//TODO *** ERROR al añadir la fecha de las reducciones ****
 	const handleChange = (e) => {
 		setProduct({
 			...product,
 			[e.target.name]: e.target.value,
 		})
+		console.log(e.target.name, e.target.value)
 	}
 
 	const saveProduct = async (e) => {
@@ -32,9 +47,9 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 		if (!response.ok) {
 			throw new Error('Something went wrong')
 		}
-		const _product = await response.json()
+		const resProduct = await response.json()
 
-		getProducts(_product)
+		getProducts(resProduct)
 		setIsOpen(false)
 	}
 
@@ -58,7 +73,7 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 							User Creator
 						</label>
 						<input
-							name='creatorUser.username'
+							name='creatorUser'
 							type='text'
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'

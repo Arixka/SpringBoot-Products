@@ -2,14 +2,15 @@ package com.maria.siverio.apirestproducts.products.services;
 
 
 import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
 
 import java.util.List;
 
 public interface IProductService {
 
-     List<ProductDto> findAll();
-     List<ProductDto> findProductsByStatus(StatusEnum status);
+     List<ProductResponseDto> findAll();
+     List<ProductResponseDto> findProductsByStatus(StatusEnum status);
      ProductDto createProduct(ProductDto productDto);
      ProductDto editProduct(ProductDto productDto);
 
