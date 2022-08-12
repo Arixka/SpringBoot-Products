@@ -4,7 +4,7 @@ import Modal from './Modal'
 const BASE_URL = 'http://localhost:8080/api/product/desactive/'
 const title = 'Titulo del modal'
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ getProducts, product }) => {
 	const { itemCode, description, status, price, createdAt, creatorUser } =
 		product
 	const [isOpen, setIsOpen] = useState(false)
@@ -46,8 +46,9 @@ const ProductItem = ({ product }) => {
 		const _product = await response.json()
 		console.log(_product)
 		closeModal()
+		getProducts()
 	}
-
+//TODO añadir validacion campo reasonDeactivate obligatorio
 	return (
 		<>
 			<Modal isOpen={isOpen} closeModal={closeModal} title={title}>

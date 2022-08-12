@@ -13,7 +13,7 @@ const NewProduct = ({ getProducts }) => {
 	const closeModal = () => {
 		setIsOpen(false)
 	}
-
+//TODO campos itemcode y description obligatorios, añadir validaciones 
 	return (
 		<>
 			<Modal isOpen={isOpen} closeModal={closeModal} title={title}>
