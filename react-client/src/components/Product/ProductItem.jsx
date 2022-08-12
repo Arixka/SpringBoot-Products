@@ -1,5 +1,6 @@
 const ProductItem = ({ product }) => {
-	const { itemCode, description, status, price, createdAt, creatorUser } = product
+	const { itemCode, description, status, price, createdAt, creatorUser } =
+		product
 
 	const onButtonView = (e) => {
 		console.log(e.currentTarget)
@@ -13,6 +14,7 @@ const ProductItem = ({ product }) => {
 		console.log(e.currentTarget)
 		console.log('Desactivar')
 	}
+
 	return (
 		<>
 			<tr
@@ -37,14 +39,17 @@ const ProductItem = ({ product }) => {
 						<button
 							onClick={onButtonEdit}
 							type='button'
-							className='py-2 px-4 text-sm font-medium text-blue-400 border-2 border-grey-400  hover:text-blue-600'
+							className={`${
+								status === 'DISCONTINUED' && 'rounded-r-lg'
+							} py-2 px-4 text-sm font-medium text-blue-400 border-2 border-grey-400  hover:text-blue-600`}
 						>
 							Edit
 						</button>
 						<button
+							hidden={status === 'DISCONTINUED' ? true : false}
 							onClick={onButtonDeactivate}
 							type='button'
-							className='py-2 px-4 text-sm font-medium text-red-400 rounded-r-lg border-2 border-grey-400 hover:text-red-600'
+							className={` py-2 px-4 text-sm font-medium text-red-400 rounded-r-lg border-2 border-grey-400 hover:text-red-600`}
 						>
 							Deactivate
 						</button>
