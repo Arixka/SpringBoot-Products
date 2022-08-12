@@ -38,7 +38,9 @@ const Modal = ({ isOpen, closeModal, title,  children }) => {
 									>
 										{title}
 									</Dialog.Title>
+								
 									{children}
+								
 									<div className='mt-4'>
 										<button
 											type='button'

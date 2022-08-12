@@ -3,12 +3,20 @@ import Modal from './Modal'
 
 const BASE_URL = 'http://localhost:8080/api/product/desactive/'
 const title = 'Titulo del modal'
+
 const ProductItem = ({ product }) => {
 	const { itemCode, description, status, price, createdAt, creatorUser } =
 		product
-
 	const [isOpen, setIsOpen] = useState(false)
+	const [resProduct, setResProduct] = useState({
+		reasonDeactivation: ''
+	})
 
+	const handleChange = (e) => {
+		setResProduct({
+			[e.target.name]: e.target.value,
+		})
+	}
 	const openModal = () => {
 		setIsOpen(true)
 	}
@@ -23,28 +31,49 @@ const ProductItem = ({ product }) => {
 		console.log(e.currentTarget)
 		console.log('Editar')
 	}
-	const onButtonDeactivate = (e) => {
-		e.preventDefault()
-		// const response = await fetch(BASE_URL+itemCode, {
-		// 	method: 'PUT',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 	},
-		// 	body: JSON.stringify(product),
-		// })
-		// if (!response.ok) {
-		// 	throw new Error('Something went wrong')
-		// }
-		// const resProduct = await response.json()
-		// console.log(resProduct)
+	const deactivatedProduct = async () => {
+		console.log('Hacemos cositas ', product.itemCode)
+		const response = await fetch(BASE_URL+itemCode, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(resProduct),
+		})
+		if (!response.ok) {
+			throw new Error('Something went wrong')
+		}
+		const _product = await response.json()
+		console.log(_product)
+		closeModal()
 	}
 
 	return (
 		<>
-			<Modal isOpen={isOpen} closeModal={closeModal} title={title} >
-				METER AQUI EL CONTENIDO DEL MODAL
+			<Modal isOpen={isOpen} closeModal={closeModal} title={title}>
+				<div className='block p-6 py-2 mt-2'>
+					<div className='h-14'>
+						<input
+							placeholder='Reason Deactivation'
+							name='reasonDeactivation'
+							type='text'
+							onChange={(e) => handleChange(e)}
+							className='block w-full px-4 py-2 my-6 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+						/>
+					</div>
+					<div className='flex justify-center '>
+						<button
+							onClick={deactivatedProduct}
+							type='button'
+							className={`py-2 px-4 text-sm font-medium text-red-400 rounded border-2 border-red-400 hover:text-red-600`}
+						>
+							Deactivate
+						</button>
+					</div>
+				</div>
 			</Modal>
 
+			{/* tabla */}
 			<tr
 				key={product.itemCode}
 				className='bg-white border-b text-center font-medium text-gray-600 text-sm whitespace-nowrap'

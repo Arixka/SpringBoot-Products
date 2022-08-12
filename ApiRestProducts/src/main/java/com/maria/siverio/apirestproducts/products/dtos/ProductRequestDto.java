@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -13,9 +13,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ProductRequestDto {
 
-    @NotNull(message = "ItemCode may not be null")
+    @NotEmpty(message = "ItemCode may not be null")
     private String itemCode;
-    @NotNull(message = "Description may not be null")
+    @NotEmpty(message = "Description may not be null")
     private String description;
     private Double price;
     private String creatorUser;

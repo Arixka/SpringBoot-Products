@@ -1,5 +1,4 @@
-import { Transition, Dialog } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import Modal from './Modal'
 import ProductForm from './ProductForm'
 
