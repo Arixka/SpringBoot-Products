@@ -14,7 +14,7 @@ public interface IProductService {
      List<ProductResponseDto> findProductsByStatus(StatusEnum status);
      ProductResponseDto createProduct(ProductRequestDto productRequestDto);
      ProductResponseDto editProduct(ProductRequestDto productRequestDto);
-     ProductDto desactiveProduct(String itemCode, String reason);
+     ProductResponseDto desactiveProduct(String itemCode, String reason);
 
 
 }

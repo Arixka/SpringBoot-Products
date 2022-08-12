@@ -1,17 +1,13 @@
 package com.maria.siverio.apirestproducts.products.services.impl;
 
-import com.maria.siverio.apirestproducts.pricereductions.dtos.PriceReductionDto;
 import com.maria.siverio.apirestproducts.pricereductions.mapper.PriceReductionMapper;
 import com.maria.siverio.apirestproducts.pricereductions.models.PriceReduction;
-import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
 import com.maria.siverio.apirestproducts.products.dtos.ProductRequestDto;
 import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;
-import com.maria.siverio.apirestproducts.products.mappers.ProductMapper;
 import com.maria.siverio.apirestproducts.products.models.Product;
 import com.maria.siverio.apirestproducts.products.repositories.ProductRepository;
 import com.maria.siverio.apirestproducts.products.services.IProductService;
-import com.maria.siverio.apirestproducts.suppliers.dtos.SupplierDto;
 import com.maria.siverio.apirestproducts.suppliers.mapper.SupplierMapper;
 import com.maria.siverio.apirestproducts.suppliers.models.Supplier;
 import com.maria.siverio.apirestproducts.suppliers.repositories.SupplierRepository;
@@ -26,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,8 +35,6 @@ public class ProductService implements IProductService {
     private UserRepository userRepository;
     @Autowired
     private SupplierRepository supplierRepository;
-    @Autowired
-    private ProductMapper productMapper;
     @Autowired
     private PriceReductionMapper priceMapper;
     @Autowired
@@ -91,7 +84,6 @@ public class ProductService implements IProductService {
             }
             product.setCreatedAt(LocalDateTime.now());
 
-//TODO llamar al repository y guardar
             Product productCreated = productRepository.save(product);
             return entityToResponseDto(productCreated);
 
@@ -113,22 +105,20 @@ public class ProductService implements IProductService {
                 productExists.setDescription(productRequestDto.getDescription());
                 productExists.setPrice(productRequestDto.getPrice());
 
-//                Set<SupplierDto> supplierList = new HashSet<>();
                 Supplier supplier = new Supplier();
                 supplier.setName(productRequestDto.getSupplierName());
                 supplier.setCountry(productRequestDto.getSupplierCountry());
 
                 Supplier supplierExists = supplierRepository.getSupplierByName(supplier.getName());
                 if (!productExists.getSuppliers().contains(supplierExists)) {
-                    //TODO REVISAR
                     productExists.addSupplier(supplier);
                 }
                 PriceReduction priceReduction = new PriceReduction();
                 priceReduction.setReducedPrice(productRequestDto.getPrice());
-                if(!productRequestDto.getReductionStartDate().equals("")){
+                if (!productRequestDto.getReductionStartDate().equals("")) {
                     priceReduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
                 }
-                if(!productRequestDto.getReductionEndDate().equals("")){
+                if (!productRequestDto.getReductionEndDate().equals("")) {
                     priceReduction.setEndDate((stringToLocalDate(productRequestDto.getReductionEndDate())));
                 }
                 //TODO REVISAR Comprobar si existe?
@@ -146,12 +136,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductDto desactiveProduct(String itemCode, String reason) {
+    public ProductResponseDto desactiveProduct(String itemCode, String reason) {
         try {
             Product productExists = productRepository.getProductByItemCode(itemCode);
             productExists.setStatus(StatusEnum.DISCONTINUED);
             productExists.setReasonDeactivation(reason.trim());
-            return productMapper.entityToDTO(productRepository.save(productExists));
+            Product productDisabled = productRepository.save(productExists);
+            return entityToResponseDto(productDisabled);
         } catch (Exception e) {
             log.error("Error when disable a product " + e);
             throw new RuntimeException(e);
@@ -166,13 +157,13 @@ public class ProductService implements IProductService {
         //TODO itemCode y Description obligatorios
         productResponse.setItemCode(product.getItemCode());
         productResponse.setDescription(product.getDescription());
-        if (!product.getCreatedAt().equals("")) {
+        if (product.getCreatedAt() != null) {
             productResponse.setCreatedAt(product.getCreatedAt().format(DateTimeFormatter
                     .ofLocalizedDate(FormatStyle.SHORT)));
         }
         productResponse.setPrice(product.getPrice());
         productResponse.setStatus(product.getStatus().name());
-        if(product.getCreatorUser()!=null){
+        if (product.getCreatorUser() != null) {
             productResponse.setCreatorUser(product.getCreatorUser().getUsername());
         }
         Set<PriceReduction> priceReductionList = product.getPricesReductions();
@@ -213,10 +204,10 @@ public class ProductService implements IProductService {
 
         PriceReduction reduction = new PriceReduction();
         reduction.setReducedPrice(productRequestDto.getPrice());
-        if(!productRequestDto.getReductionStartDate().equals("")){
+        if (!productRequestDto.getReductionStartDate().equals("")) {
             reduction.setStartDate(stringToLocalDate(productRequestDto.getReductionStartDate()));
         }
-        if(!productRequestDto.getReductionEndDate().equals("")){
+        if (!productRequestDto.getReductionEndDate().equals("")) {
             reduction.setEndDate(stringToLocalDate(productRequestDto.getReductionEndDate()));
         }
         product.addReduction(reduction);

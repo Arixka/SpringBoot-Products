@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 
-//@CrossOrigin(origins = "http://localhost:3000")
 @CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"})
 @RestController
 @RequestMapping("/api/product")
@@ -49,8 +48,8 @@ public class ProductController {
     }
 
     @PutMapping("/desactive/{itemcode}")
-    private ResponseEntity<ProductDto> desactiveProduct(@PathVariable String itemcode, @RequestBody ProductDto productDto) {
-        ProductDto disabletProduct = service.desactiveProduct(itemcode, productDto.getReasonDeactivation());
+    private ResponseEntity<ProductResponseDto> desactiveProduct(@PathVariable String itemcode, @RequestBody ProductRequestDto productRequestDto) {
+        ProductResponseDto disabletProduct = service.desactiveProduct(itemcode, productRequestDto.getReasonDeactivation());
         if (disabletProduct == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
