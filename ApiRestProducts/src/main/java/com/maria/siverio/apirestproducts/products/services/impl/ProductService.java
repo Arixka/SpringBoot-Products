@@ -140,7 +140,9 @@ public class ProductService implements IProductService {
         try {
             Product productExists = productRepository.getProductByItemCode(itemCode);
             productExists.setStatus(StatusEnum.DISCONTINUED);
-            productExists.setReasonDeactivation(reason.trim());
+            if(!reason.equals("")){
+                productExists.setReasonDeactivation(reason.trim());
+            }
             Product productDisabled = productRepository.save(productExists);
             return entityToResponseDto(productDisabled);
         } catch (Exception e) {
@@ -221,7 +223,7 @@ public class ProductService implements IProductService {
     }
 
     protected LocalDate stringToLocalDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }
 

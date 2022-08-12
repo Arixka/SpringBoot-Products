@@ -8,6 +8,7 @@ const ProductList = () => {
 	const [products, setProducts] = useState([])
 	const [loading, setLoading] = useState(true)
 
+
 	const getProducts = async () => {
 		setLoading(true)
 		try {
@@ -32,8 +33,9 @@ const ProductList = () => {
 
 	return (
 		<>
+
 			<NewProduct getProducts={getProducts} />
-			
+
 			<div className='container mx-auto my-10'>
 				<div className='shadow border-b'>
 					<table className='w-full text-sm text-left text-gray-500 dark:text-gray-400 '>

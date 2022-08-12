@@ -1,7 +1,20 @@
+import { useState } from 'react'
+import Modal from './Modal'
+
+const BASE_URL = 'http://localhost:8080/api/product/desactive/'
+const title = 'Titulo del modal'
 const ProductItem = ({ product }) => {
 	const { itemCode, description, status, price, createdAt, creatorUser } =
 		product
 
+	const [isOpen, setIsOpen] = useState(false)
+
+	const openModal = () => {
+		setIsOpen(true)
+	}
+	const closeModal = () => {
+		setIsOpen(false)
+	}
 	const onButtonView = (e) => {
 		console.log(e.currentTarget)
 		console.log('Ver ')
@@ -11,12 +24,27 @@ const ProductItem = ({ product }) => {
 		console.log('Editar')
 	}
 	const onButtonDeactivate = (e) => {
-		console.log(e.currentTarget)
-		console.log('Desactivar')
+		e.preventDefault()
+		// const response = await fetch(BASE_URL+itemCode, {
+		// 	method: 'PUT',
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 	},
+		// 	body: JSON.stringify(product),
+		// })
+		// if (!response.ok) {
+		// 	throw new Error('Something went wrong')
+		// }
+		// const resProduct = await response.json()
+		// console.log(resProduct)
 	}
 
 	return (
 		<>
+			<Modal isOpen={isOpen} closeModal={closeModal} title={title} >
+				METER AQUI EL CONTENIDO DEL MODAL
+			</Modal>
+
 			<tr
 				key={product.itemCode}
 				className='bg-white border-b text-center font-medium text-gray-600 text-sm whitespace-nowrap'
@@ -47,7 +75,7 @@ const ProductItem = ({ product }) => {
 						</button>
 						<button
 							hidden={status === 'DISCONTINUED' ? true : false}
-							onClick={onButtonDeactivate}
+							onClick={openModal}
 							type='button'
 							className={` py-2 px-4 text-sm font-medium text-red-400 rounded-r-lg border-2 border-grey-400 hover:text-red-600`}
 						>
