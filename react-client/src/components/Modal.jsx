@@ -7,7 +7,7 @@ const Modal = ({ isOpen, closeModal, title,  children }) => {
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>
-				<Dialog as='div' className='relative z-10' onClose={closeModal}>
+				<Dialog as='div' className='relative z-10' onClose={()=>closeModal(!isOpen)}>
 					<Transition.Child
 						as={Fragment}
 						enter='ease-out duration-300'
@@ -45,7 +45,7 @@ const Modal = ({ isOpen, closeModal, title,  children }) => {
 										<button
 											type='button'
 											className='absolute top-0 right-0 h-16 w-16'
-											onClick={()=>closeModal()}
+											onClick={()=>closeModal(!isOpen)}
 										>
 											<svg
 												aria-hidden='true'

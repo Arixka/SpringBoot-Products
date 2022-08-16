@@ -50,8 +50,7 @@ const ProductList = () => {
 	useEffect(() => {
 		getProducts()
 	}, [])
-	//TODO añadir algo para filtrar lista por status
-	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
+	
 
 	return (
 		<>
@@ -59,7 +58,6 @@ const ProductList = () => {
 				<div className='h-12 flex justify-between'>
 					{/* filtrar */}
 					<Search handleSearch={handleSearch} />
-
 					<NewProduct getProducts={getProducts} />
 				</div>
 			</div>

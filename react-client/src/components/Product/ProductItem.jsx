@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import Modal from '../Modal'
+import ProductForm from './ProductForm'
+import ProductInfo from './ProductInfo'
 
 const BASE_URL = 'http://localhost:8080/api/product/desactive/'
-const title = 'Titulo del modal'
 
 const ProductItem = ({ getProducts, product }) => {
 	const { itemCode, description, status, price, createdAt, creatorUser } =
 		product
-	const [isOpen, setIsOpen] = useState(false)
+	const [isOpenDeactivate, setIsOpenDeactivate] = useState(false)
+	const [isOpenView, setIsOpenView] = useState(false)
+	const [isOpenEdit, setIsOpenEdit] = useState(false)
 	const [resProduct, setResProduct] = useState({
-		reasonDeactivation: ''
+		reasonDeactivation: '',
 	})
 
 	const handleChange = (e) => {
@@ -17,23 +20,17 @@ const ProductItem = ({ getProducts, product }) => {
 			[e.target.name]: e.target.value,
 		})
 	}
-	const openModal = () => {
-		setIsOpen(true)
-	}
-	const closeModal = () => {
-		setIsOpen(false)
-	}
-	const onButtonView = (e) => {
+
+	const onViewProduct = (e) => {
 		console.log(e.currentTarget)
-		console.log('Ver ')
+		console.log('Ver ', product)
 	}
-	const onButtonEdit = (e) => {
+	const onEditProduct = (e) => {
 		console.log(e.currentTarget)
 		console.log('Editar')
 	}
-	const deactivatedProduct = async () => {
-		console.log('Hacemos cositas ', product.itemCode)
-		const response = await fetch(BASE_URL+itemCode, {
+	const onDeactivatedProduct = async () => {
+		const response = await fetch(BASE_URL + itemCode, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -45,13 +42,33 @@ const ProductItem = ({ getProducts, product }) => {
 		}
 		const _product = await response.json()
 		console.log(_product)
-		closeModal()
+		setIsOpenDeactivate(!isOpenDeactivate)
 		getProducts()
 	}
-//TODO añadir validacion campo reasonDeactivate obligatorio
+	//TODO añadir validacion campo reasonDeactivate obligatorio
+	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 	return (
 		<>
-			<Modal isOpen={isOpen} closeModal={closeModal} title={title}>
+			{/* <Modal isOpen={isOpen} closeModal={closeModal} title={title}></Modal> */}
+			<Modal
+				isOpen={isOpenView}
+				closeModal={setIsOpenView}
+				title={'Product Info'}
+			>
+				<ProductInfo product={product} />
+			</Modal>
+			<Modal
+				isOpen={isOpenEdit}
+				closeModal={setIsOpenEdit}
+				title={'Edit Product'}
+			>
+				Probando vista edit
+			</Modal>
+			<Modal
+				isOpen={isOpenDeactivate}
+				closeModal={setIsOpenDeactivate}
+				title={'Disable Product'}
+			>
 				<div className='block p-6 py-2 mt-2'>
 					<div className='h-14'>
 						<input
@@ -64,7 +81,7 @@ const ProductItem = ({ getProducts, product }) => {
 					</div>
 					<div className='flex justify-center '>
 						<button
-							onClick={deactivatedProduct}
+							onClick={onDeactivatedProduct}
 							type='button'
 							className={`py-2 px-4 text-sm font-medium text-red-400 rounded border-2 border-red-400 hover:text-red-600`}
 						>
@@ -88,14 +105,14 @@ const ProductItem = ({ getProducts, product }) => {
 				<td className='py-4 flex justify-center'>
 					<div className='inline-flex rounded-md shadow-sm  ' role='group'>
 						<button
-							onClick={onButtonView}
+							onClick={() => setIsOpenView(!isOpenView)}
 							type='button'
 							className='py-2 px-4 text-sm font-medium rounded-l-lg text-amber-400 border-2 border-grey-400  hover:text-amber-600'
 						>
 							View
 						</button>
 						<button
-							onClick={onButtonEdit}
+							onClick={() => setIsOpenEdit(!isOpenEdit)}
 							type='button'
 							className={`${
 								status === 'DISCONTINUED' && 'rounded-r-lg'
@@ -105,7 +122,7 @@ const ProductItem = ({ getProducts, product }) => {
 						</button>
 						<button
 							hidden={status === 'DISCONTINUED' ? true : false}
-							onClick={openModal}
+							onClick={() => setIsOpenDeactivate(!isOpenDeactivate)}
 							type='button'
 							className={` py-2 px-4 text-sm font-medium text-red-400 rounded-r-lg border-2 border-grey-400 hover:text-red-600`}
 						>
