@@ -1,13 +1,15 @@
 import { Transition, Dialog } from '@headlessui/react'
 import { Fragment } from 'react'
 
-const Modal = ({ isOpen, closeModal, title,  children }) => {
-
-    
+const Modal = ({ isOpen, closeModal, title, children }) => {
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>
-				<Dialog as='div' className='relative z-10' onClose={()=>closeModal(!isOpen)}>
+				<Dialog
+					as='div'
+					className='relative z-10'
+					onClose={() => closeModal(!isOpen)}
+				>
 					<Transition.Child
 						as={Fragment}
 						enter='ease-out duration-300'
@@ -34,18 +36,18 @@ const Modal = ({ isOpen, closeModal, title,  children }) => {
 								<Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
 									<Dialog.Title
 										as='h3'
-										className='text-lg font-medium leading-6 text-indigo-900 text-center'
+										className='modal-header border-b p-4 border-gray-200 text-3xl font-medium leading-6 text-indigo-900 text-center'
 									>
 										{title}
 									</Dialog.Title>
-								
+
 									{children}
-								
+
 									<div className='mt-4'>
 										<button
 											type='button'
 											className='absolute top-0 right-0 h-16 w-16'
-											onClick={()=>closeModal(!isOpen)}
+											onClick={() => closeModal(!isOpen)}
 										>
 											<svg
 												aria-hidden='true'

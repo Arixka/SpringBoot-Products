@@ -56,7 +56,6 @@ const ProductList = () => {
 		<>
 			<div className='container mx-auto my-8'>
 				<div className='h-12 flex justify-between'>
-					{/* filtrar */}
 					<Search handleSearch={handleSearch} />
 					<NewProduct getProducts={getProducts} />
 				</div>

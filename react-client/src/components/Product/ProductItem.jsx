@@ -49,7 +49,6 @@ const ProductItem = ({ getProducts, product }) => {
 	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 	return (
 		<>
-			{/* <Modal isOpen={isOpen} closeModal={closeModal} title={title}></Modal> */}
 			<Modal
 				isOpen={isOpenView}
 				closeModal={setIsOpenView}
@@ -63,6 +62,7 @@ const ProductItem = ({ getProducts, product }) => {
 				title={'Edit Product'}
 			>
 				Probando vista edit
+				<ProductForm getProducts={getProducts} setIsOpen={setIsOpenEdit} />
 			</Modal>
 			<Modal
 				isOpen={isOpenDeactivate}
@@ -79,11 +79,11 @@ const ProductItem = ({ getProducts, product }) => {
 							className='block w-full px-4 py-2 my-6 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
 					</div>
-					<div className='flex justify-center '>
+					<div className='flex justify-center pt-4'>
 						<button
 							onClick={onDeactivatedProduct}
 							type='button'
-							className={`py-2 px-4 text-sm font-medium text-red-400 rounded border-2 border-red-400 hover:text-red-600`}
+							className={`py-2 px-4  text-sm font-medium text-red-400 rounded border-2 border-red-400 hover:text-red-600`}
 						>
 							Deactivate
 						</button>

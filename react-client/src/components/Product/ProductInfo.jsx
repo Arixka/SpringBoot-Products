@@ -43,7 +43,7 @@ const ProductInfo = ({ product }) => {
 						<h5 className='my-2 text-sm font-medium text-gray-900 col-span-2'>
 							Suppliers:
 						</h5>
-						<ul className='w-full text-lg font-light text-gray-500 mx-6'>
+						<ul className='w-full text-lg font-light text-gray-500 mx-12'>
 							{product.suppliers?.map((supplier, index) => (
 								<li key={index}>
 									<div className='grid grid-cols-2'>
@@ -57,10 +57,10 @@ const ProductInfo = ({ product }) => {
 						</ul>
 					</div>
 					<div className='col-span-3'>
-						<h5 className='my-2 text-sm font-medium text-gray-900 '>
+						<h5 className='my-2 text-sm font-medium text-gray-900'>
 							Price Reductions:
 						</h5>
-						<ul className='w-full text-lg font-light text-gray-500 mx-6'>
+						<ul className='w-full text-lg font-light text-gray-500 mx-12'>
 							{product.pricesReductions?.map((price, index) => (
 								<li key={index}>
 									<div className='grid grid-cols-2 '>

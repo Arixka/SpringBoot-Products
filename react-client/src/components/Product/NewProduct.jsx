@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Modal from '../Modal'
 import ProductForm from './ProductForm'
 
-const title = 'Add Product'
+const BASE_URL = 'http://localhost:8080/api/product/'
 
 const NewProduct = ({ getProducts }) => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -13,11 +13,31 @@ const NewProduct = ({ getProducts }) => {
 	const closeModal = () => {
 		setIsOpen(false)
 	}
+
+	const handleNewProduct = async (product) => {
+		const response = await fetch(BASE_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(product),
+		})
+		console.log('product: ', product)
+		if (!response.ok) {
+			throw new Error('Something went wrong')
+		}
+		const resProduct = await response.json()
+
+		getProducts(resProduct)
+	}
 	//TODO campos itemcode y description obligatorios, añadir validaciones
 	return (
 		<>
-			<Modal isOpen={isOpen} closeModal={closeModal} title={title}>
-				<ProductForm getProducts={getProducts} setIsOpen={setIsOpen} />
+			<Modal isOpen={isOpen} closeModal={closeModal} title={'Add Product'}>
+				<ProductForm
+					handleNewProduct={handleNewProduct}
+					setIsOpen={setIsOpen}
+				/>
 			</Modal>
 
 			<button

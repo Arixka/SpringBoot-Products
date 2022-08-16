@@ -1,6 +1,4 @@
-import { useState } from 'react'
-
-const BASE_URL = 'http://localhost:8080/api/product/'
+import { useState, useEffect } from 'react'
 
 const _product = {
 	itemCode: '',
@@ -13,8 +11,11 @@ const _product = {
 	reductionStartDate: '',
 	reductionEndDate: '',
 }
-const ProductForm = ({ getProducts, setIsOpen }) => {
+
+const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 	const [product, setProduct] = useState(_product)
+	const [formErrors, setFormErrors] = useState({})
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const handleChange = (e) => {
 		setProduct({
@@ -25,23 +26,27 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 
 	const saveProduct = async (e) => {
 		e.preventDefault()
-
-		const response = await fetch(BASE_URL, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(product),
-		})
-		console.log('product: ', product)
-		if (!response.ok) {
-			throw new Error('Something went wrong')
-		}
-		const resProduct = await response.json()
-
-		getProducts(resProduct)
-		setIsOpen(false)
+		setFormErrors(validateInputs(product))
+		setIsSubmitting(true)
+		// handleNewProduct(product)
+		// setIsOpen(false)
 	}
+	const validateInputs = (values) => {
+		let errors = {}
+
+		if (!product.itemCode) {
+			errors.itemCode = 'Cannot be blank'
+		}
+		if (!product.description) {
+			errors.description = 'This field is required'
+		}
+		return errors
+	}
+	useEffect(() => {
+		if (Object.keys(formErrors).length === 0 && isSubmitting) {
+			submitForm()
+		}
+	}, [formErrors])
 	//TODO *** AÑADIR VALIDACIONES itemCode y Description obligatorios ****
 	return (
 		<>
@@ -55,9 +60,15 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 							placeholder='Item Code'
 							name='itemCode'
 							type='text'
+							value={product.itemCode}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
+						{formErrors.itemCode && (
+							<span className='text-red-500 text-xs italic'>
+								{formErrors.itemCode}
+							</span>
+						)}
 					</div>
 					<div className='h-14'>
 						<input
@@ -76,9 +87,15 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 						placeholder='Description'
 						name='description'
 						type='text'
+						value={product.description}
 						onChange={(e) => handleChange(e)}
 						className='block w-full px-4 py-2  text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 					/>
+					{formErrors.description && (
+						<span className='text-red-500 text-xs italic'>
+							{formErrors.description}
+						</span>
+					)}
 				</div>
 				<div className='h-14'>
 					<input
@@ -86,7 +103,7 @@ const ProductForm = ({ getProducts, setIsOpen }) => {
 						name='price'
 						type='number'
 						onChange={(e) => handleChange(e)}
-						className='block w-full px-4 py-2  text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+						className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 					/>
 				</div>
 
