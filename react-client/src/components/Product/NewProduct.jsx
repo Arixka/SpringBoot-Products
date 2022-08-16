@@ -22,7 +22,7 @@ const NewProduct = ({ getProducts }) => {
 			},
 			body: JSON.stringify(product),
 		})
-		console.log('product: ', product)
+		
 		if (!response.ok) {
 			throw new Error('Something went wrong')
 		}

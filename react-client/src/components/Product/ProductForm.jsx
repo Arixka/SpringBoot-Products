@@ -24,29 +24,34 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 		})
 	}
 
-	const saveProduct = async (e) => {
+	const handleSubmit = (e) => {
 		e.preventDefault()
 		setFormErrors(validateInputs(product))
+
 		setIsSubmitting(true)
-		// handleNewProduct(product)
-		// setIsOpen(false)
 	}
+	const saveProduct = () => {
+		handleNewProduct(product)
+		setIsOpen(false)
+	}
+
+	useEffect(() => {
+		if (Object.keys(formErrors).length === 0 && isSubmitting) {
+			saveProduct()
+		}
+	}, [formErrors])
+
 	const validateInputs = (values) => {
 		let errors = {}
 
-		if (!product.itemCode) {
+		if (!values.itemCode) {
 			errors.itemCode = 'Cannot be blank'
 		}
-		if (!product.description) {
+		if (!values.description) {
 			errors.description = 'This field is required'
 		}
 		return errors
 	}
-	useEffect(() => {
-		if (Object.keys(formErrors).length === 0 && isSubmitting) {
-			submitForm()
-		}
-	}, [formErrors])
 	//TODO *** AÑADIR VALIDACIONES itemCode y Description obligatorios ****
 	return (
 		<>
@@ -171,7 +176,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 			<div className='flex justify-center space-x-4 mt-4'>
 				<button
 					className='rounded-md  uppercase border border-transparent bg-indigo-100 px-8 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ease-linear transition-all duration-150'
-					onClick={saveProduct}
+					onClick={handleSubmit}
 				>
 					Save
 				</button>
