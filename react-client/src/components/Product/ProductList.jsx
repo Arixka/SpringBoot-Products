@@ -1,14 +1,32 @@
 import { useEffect, useState } from 'react'
-import { Switch } from '@headlessui/react'
 import NewProduct from './NewProduct'
 import ProductItem from './ProductItem'
+import Search from '../Search'
 
 const ProductList = () => {
 	const BASE_URL = 'http://localhost:8080/api/product/all'
 
 	const [products, setProducts] = useState([])
 	const [loading, setLoading] = useState(true)
-	const [enabled, setEnabled] = useState(false)
+	const [listSearch, setListSearch] = useState([])
+
+	const handleSearch = (e) => {
+		filterTable(e.target.value)
+	}
+
+	const filterTable = (search) => {
+		if (search === '') return getProducts()
+		const filteredResult = listSearch.filter((product) => {
+			const status = product.status.toLowerCase()
+			const itemCode = product.itemCode.toLowerCase()
+			const _search = search.toString().toLowerCase().trim()
+
+			if (status.includes(_search) || itemCode.includes(_search)) {
+				return product
+			}
+		})
+		setProducts(filteredResult)
+	}
 
 	const getProducts = async () => {
 		setLoading(true)
@@ -22,6 +40,7 @@ const ProductList = () => {
 
 			const productsRest = await response.json()
 			setProducts(productsRest)
+			setListSearch(productsRest)
 		} catch (error) {
 			console.log(error)
 		}
@@ -31,13 +50,19 @@ const ProductList = () => {
 	useEffect(() => {
 		getProducts()
 	}, [])
-	//TODO añadir un switch para filtrar lista por status
+	//TODO añadir algo para filtrar lista por status
 	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 
 	return (
 		<>
-			<NewProduct getProducts={getProducts} />
+			<div className='container mx-auto my-8'>
+				<div className='h-12 flex justify-between'>
+					{/* filtrar */}
+					<Search handleSearch={handleSearch} />
 
+					<NewProduct getProducts={getProducts} />
+				</div>
+			</div>
 			<div className='container mx-auto my-10'>
 				<div className='shadow border-b'>
 					<table className='w-full text-sm text-left text-gray-500 dark:text-gray-400 '>
@@ -50,23 +75,7 @@ const ProductList = () => {
 								<th className='px-6 py-3'>Creation Date</th>
 								<th className='px-6 py-3'>User Creator</th>
 								<th className='px-6 py-3 '>
-									<div className='flex space-x-4'>
-										Actions
-										<Switch
-											checked={enabled}
-											onChange={setEnabled}
-											className={` ${
-												enabled ? 'bg-indigo-600' : 'bg-gray-200'
-											} relative inline-flex h-6 w-11 items-center rounded-full `}
-										>
-											<span className='sr-only'>Enable notifications</span>
-											<span
-												className={`${
-													enabled ? 'translate-x-6' : 'translate-x-1'
-												} inline-block h-4 w-4 transform rounded-full bg-white`}
-											/>
-										</Switch>
-									</div>
+									<div className='flex space-x-4'>Actions</div>
 								</th>
 							</tr>
 						</thead>
