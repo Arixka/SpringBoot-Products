@@ -50,7 +50,6 @@ const ProductList = () => {
 	useEffect(() => {
 		getProducts()
 	}, [])
-	
 
 	return (
 		<>
@@ -72,10 +71,11 @@ const ProductList = () => {
 								<th className='px-6 py-3'>Creation Date</th>
 								<th className='px-6 py-3'>User Creator</th>
 								<th className='px-6 py-3 '>
-									<div className='flex space-x-4'>Actions</div>
+									<span className='flex space-x-4'>Actions</span>
 								</th>
 							</tr>
 						</thead>
+						{/* TODO error  Warning: validateDOMNesting(...): <div> cannot appear as a child of <tbody>. al abrir modales*/}
 						{!loading && (
 							<tbody>
 								{products?.map((product) => (

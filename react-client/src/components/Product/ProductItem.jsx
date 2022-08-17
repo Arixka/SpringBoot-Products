@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Modal from '../Modal'
-import ProductForm from './ProductForm'
+import EditProductForm from './EditProductForm'
 import ProductInfo from './ProductInfo'
 
 const BASE_URL = 'http://localhost:8080/api/product/desactive/'
@@ -21,14 +21,11 @@ const ProductItem = ({ getProducts, product }) => {
 		})
 	}
 
-	const onViewProduct = (e) => {
-		console.log(e.currentTarget)
-		console.log('Ver ', product)
-	}
-	const onEditProduct = (e) => {
-		console.log(e.currentTarget)
+	const handleEditProduct = (productEdited) => {
 		console.log('Editar')
+		console.log(productEdited)
 	}
+
 	const onDeactivatedProduct = async () => {
 		const response = await fetch(BASE_URL + itemCode, {
 			method: 'PUT',
@@ -45,7 +42,8 @@ const ProductItem = ({ getProducts, product }) => {
 		setIsOpenDeactivate(!isOpenDeactivate)
 		getProducts()
 	}
-	//TODO añadir validacion campo reasonDeactivate obligatorio
+
+
 	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 	return (
 		<>
@@ -61,8 +59,11 @@ const ProductItem = ({ getProducts, product }) => {
 				closeModal={setIsOpenEdit}
 				title={'Edit Product'}
 			>
-				Probando vista edit
-				<ProductForm getProducts={getProducts} setIsOpen={setIsOpenEdit} />
+				<EditProductForm
+					handleEditProduct={handleEditProduct}
+					product={product}
+					setIsOpen={setIsOpenEdit}
+				/>
 			</Modal>
 			<Modal
 				isOpen={isOpenDeactivate}
@@ -103,7 +104,7 @@ const ProductItem = ({ getProducts, product }) => {
 				<td className='py-4'>{createdAt}</td>
 				<td className='py-4'>{creatorUser}</td>
 				<td className='py-4 flex justify-center'>
-					<div className='inline-flex rounded-md shadow-sm  ' role='group'>
+					<span className='inline-flex rounded-md shadow-sm  ' role='group'>
 						<button
 							onClick={() => setIsOpenView(!isOpenView)}
 							type='button'
@@ -112,7 +113,7 @@ const ProductItem = ({ getProducts, product }) => {
 							View
 						</button>
 						<button
-							onClick={() => setIsOpenEdit(!isOpenEdit)}
+							onClick={()=>setIsOpenEdit(!isOpenEdit)}
 							type='button'
 							className={`${
 								status === 'DISCONTINUED' && 'rounded-r-lg'
@@ -128,7 +129,7 @@ const ProductItem = ({ getProducts, product }) => {
 						>
 							Deactivate
 						</button>
-					</div>
+					</span>
 				</td>
 			</tr>
 		</>

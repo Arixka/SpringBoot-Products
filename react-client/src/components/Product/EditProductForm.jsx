@@ -1,45 +1,50 @@
 import { useState, useEffect } from 'react'
-
 const _product = {
 	itemCode: '',
 	description: '',
-	price: 0,
+	price: '',
 	creatorUser: '',
 	supplierName: '',
 	supplierCountry: '',
-	priceReduction: 0,
+	priceReduction: '',
 	reductionStartDate: '',
 	reductionEndDate: '',
 }
+const EditProductForm = ({ handleEditProduct, product, setIsOpen }) => {
+	const [editProduct, setEditProduct] = useState(_product)
 
-const ProductForm = ({ handleNewProduct, setIsOpen }) => {
-	const [newProduct, setNewProduct] = useState(_product)
 	const [formErrors, setFormErrors] = useState({})
 	const [isSubmitting, setIsSubmitting] = useState(false)
-
-	const handleChange = (e) => {
-		setNewProduct({
-			...newProduct,
-			[e.target.name]: e.target.value,
-		})
-	}
+	const _supplier = product.suppliers.length
+		? product.suppliers[0]
+		: { name: '', country: '' }
+	const _reduction = product.pricesReductions.length
+		? product.pricesReductions[0]
+		: { reducedPrice: 0, startDate: '', endDate: '' }
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		setFormErrors(validateInputs(newProduct))
+		setFormErrors(validateInputs(editProduct))
 		setIsSubmitting(true)
 	}
 
-	const saveProduct = () => {
-		handleNewProduct(newProduct)
+	const editProductSave = () => {
+		handleEditProduct(editProduct)
 		setIsOpen(false)
 	}
 
 	useEffect(() => {
 		if (Object.keys(formErrors).length === 0 && isSubmitting) {
-			saveProduct()
+			editProductSave()
 		}
 	}, [formErrors])
+
+	const handleChange = (e) => {
+		setEditProduct({
+			...editProduct,
+			[e.target.name]: e.target.value,
+		})
+	}
 
 	const validateInputs = (values) => {
 		let errors = {}
@@ -52,7 +57,35 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 		}
 		return errors
 	}
-	
+	const validateDate = (date) => {
+		let inputDate = ''
+
+		if (date === 'startDate') {
+			inputDate = _reduction && _reduction.endDate
+		} else if (date === 'endDate') {
+			inputDate = _reduction && _reduction.startDate
+		}
+		if (inputDate.length) {
+			const [year, month, day] = inputDate.split('-').reverse()
+			return `${year}-${month}-${day}`
+		}else{
+			return ''
+		}
+	}
+	useEffect(() => {
+		setEditProduct({
+			itemCode: product.itemCode,
+			description: product.description,
+			price: product.price,
+			creatorUser: product.creatorUser,
+			supplierName: _supplier && _supplier.name,
+			supplierCountry: _supplier && _supplier.country,
+			priceReduction: _reduction && _reduction.reducedPrice,
+			reductionStartDate: validateDate('startDate'),
+			reductionEndDate: validateDate('endDate'),
+		})
+	}, [])
+
 	return (
 		<>
 			<div className='block p-6 py-2 mt-2'>
@@ -65,7 +98,9 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 							placeholder='Item Code'
 							name='itemCode'
 							type='text'
-							value={newProduct.itemCode}
+							disabled
+							readOnly
+							value={editProduct.itemCode}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
@@ -80,6 +115,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 							placeholder='User Creator'
 							name='creatorUser'
 							type='text'
+							value={editProduct.creatorUser}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
@@ -92,7 +128,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 						placeholder='Description'
 						name='description'
 						type='text'
-						value={newProduct.description}
+						value={editProduct.description}
 						onChange={(e) => handleChange(e)}
 						className='block w-full px-4 py-2  text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 					/>
@@ -107,6 +143,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 						placeholder='Price'
 						name='price'
 						type='number'
+						value={editProduct.price}
 						onChange={(e) => handleChange(e)}
 						className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 					/>
@@ -121,6 +158,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 							placeholder='Name'
 							name='supplierName'
 							type='text'
+							value={editProduct.supplierName}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
@@ -128,6 +166,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 							placeholder='Country'
 							name='supplierCountry'
 							type='text'
+							value={editProduct.supplierCountry}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
@@ -142,6 +181,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 							placeholder='Price to be reduced'
 							name='priceReduction'
 							type='number'
+							value={editProduct.priceReduction}
 							onChange={(e) => handleChange(e)}
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 						/>
@@ -153,6 +193,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 								<input
 									name='reductionStartDate'
 									type='date'
+									value={editProduct.reductionStartDate}
 									onChange={(e) => handleChange(e)}
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 								/>
@@ -164,6 +205,7 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 								<input
 									name='reductionEndDate'
 									type='date'
+									value={editProduct.reductionEndDate}
 									onChange={(e) => handleChange(e)}
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 								/>
@@ -185,4 +227,4 @@ const ProductForm = ({ handleNewProduct, setIsOpen }) => {
 	)
 }
 
-export default ProductForm
+export default EditProductForm
