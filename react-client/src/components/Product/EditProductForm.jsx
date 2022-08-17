@@ -60,29 +60,27 @@ const EditProductForm = ({ handleEditProduct, product, setIsOpen }) => {
 	const validateDate = (date) => {
 		let inputDate = ''
 
-		if (date === 'startDate') {
-			inputDate = _reduction && _reduction.endDate
-		} else if (date === 'endDate') {
-			inputDate = _reduction && _reduction.startDate
+		if (date === 'startDate' && _reduction.startDate) {
+			inputDate = _reduction.startDate
+		} else if (date === 'endDate' && _reduction.endDate) {
+			inputDate = _reduction.endDate
 		}
-		if (inputDate.length) {
+		if (inputDate != null) {
 			const [year, month, day] = inputDate.split('-').reverse()
-			return `${year}-${month}-${day}`
-		}else{
-			return ''
-		}
+			return ( `${year}-${month}-${day}`).includes('undefined') ? '' : `${year}-${month}-${day}`
+		} 
 	}
 	useEffect(() => {
 		setEditProduct({
 			itemCode: product.itemCode,
 			description: product.description,
 			price: product.price,
-			creatorUser: product.creatorUser,
+			creatorUser: product.creatorUser ? product.creatorUser : '',
 			supplierName: _supplier && _supplier.name,
 			supplierCountry: _supplier && _supplier.country,
 			priceReduction: _reduction && _reduction.reducedPrice,
-			reductionStartDate: validateDate('startDate'),
-			reductionEndDate: validateDate('endDate'),
+			reductionStartDate: _reduction ? validateDate('startDate') : '',
+			reductionEndDate: _reduction ? validateDate('endDate') : '',
 		})
 	}, [])
 

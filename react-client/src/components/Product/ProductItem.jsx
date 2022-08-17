@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Modal from '../Modal'
 import EditProductForm from './EditProductForm'
 import ProductInfo from './ProductInfo'
 
-const BASE_URL = 'http://localhost:8080/api/product/desactive/'
+const BASE_URL = 'http://localhost:8080/api/product/'
+const BASE_URL_DEACTIVATE = 'http://localhost:8080/api/product/desactive/'
 
 const ProductItem = ({ getProducts, product }) => {
 	const { itemCode, description, status, price, createdAt, creatorUser } =
@@ -21,13 +22,24 @@ const ProductItem = ({ getProducts, product }) => {
 		})
 	}
 
-	const handleEditProduct = (productEdited) => {
-		console.log('Editar')
-		console.log(productEdited)
+	const handleEditProduct = async (productEdited) => {
+		const response = await fetch(BASE_URL, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(productEdited),
+		})
+		if (!response.ok) {
+			throw new Error('Something went wrong')
+		}
+		const _product = await response.json()
+		console.log(_product)
+		getProducts()
 	}
 
 	const onDeactivatedProduct = async () => {
-		const response = await fetch(BASE_URL + itemCode, {
+		const response = await fetch(BASE_URL_DEACTIVATE + itemCode, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -42,7 +54,6 @@ const ProductItem = ({ getProducts, product }) => {
 		setIsOpenDeactivate(!isOpenDeactivate)
 		getProducts()
 	}
-
 
 	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 	return (
@@ -108,16 +119,17 @@ const ProductItem = ({ getProducts, product }) => {
 						<button
 							onClick={() => setIsOpenView(!isOpenView)}
 							type='button'
-							className='py-2 px-4 text-sm font-medium rounded-l-lg text-amber-400 border-2 border-grey-400  hover:text-amber-600'
+							className={`${
+								status === 'DISCONTINUED' && 'rounded-r-lg'
+							} py-2 px-4 text-sm font-medium rounded-l-lg text-amber-400 border-2 border-grey-400  hover:text-amber-600`}
 						>
 							View
 						</button>
 						<button
-							onClick={()=>setIsOpenEdit(!isOpenEdit)}
+							onClick={() => setIsOpenEdit(!isOpenEdit)}
 							type='button'
-							className={`${
-								status === 'DISCONTINUED' && 'rounded-r-lg'
-							} py-2 px-4 text-sm font-medium text-blue-400 border-2 border-grey-400  hover:text-blue-600`}
+							hidden={status === 'DISCONTINUED' ? true : false}
+							className={` py-2 px-4 text-sm font-medium text-blue-400 border-2 border-grey-400  hover:text-blue-600`}
 						>
 							Edit
 						</button>

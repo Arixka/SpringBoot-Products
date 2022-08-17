@@ -28,7 +28,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productsResponse);
     }
 
-    @PostMapping("/") //TODO valid no deberia comprobar los campos que no deben ser null?
+    @PostMapping("/")
     private ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
         ProductResponseDto createProductResponse = service.createProduct(productRequestDto);
 

@@ -100,7 +100,7 @@ public class ProductService implements IProductService {
         Product productExists;
         try {
             productExists = productRepository.getProductByItemCode(productRequestDto.getItemCode());
-            //TODO POR AQUI
+            //TODO POR AQUI solo esta actualizando los activos?
             if (productExists.getStatus() == StatusEnum.ACTIVE) {
                 productExists.setDescription(productRequestDto.getDescription());
                 productExists.setPrice(productRequestDto.getPrice());
