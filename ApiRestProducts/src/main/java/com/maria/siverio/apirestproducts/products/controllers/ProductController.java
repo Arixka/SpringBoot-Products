@@ -1,6 +1,6 @@
 package com.maria.siverio.apirestproducts.products.controllers;
 
-import com.maria.siverio.apirestproducts.products.dtos.ProductDto;
+
 import com.maria.siverio.apirestproducts.products.dtos.ProductRequestDto;
 import com.maria.siverio.apirestproducts.products.dtos.ProductResponseDto;
 import com.maria.siverio.apirestproducts.products.enums.StatusEnum;

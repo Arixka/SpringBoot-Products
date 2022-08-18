@@ -1,9 +1,11 @@
 package com.maria.siverio.apirestproducts.users.models;
 
+import com.maria.siverio.apirestproducts.users.dtos.RoleDto;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,6 +35,9 @@ public class User {
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_role"
             ))
-    private List<Role> roles;
+    private List<Role> roles= new ArrayList<>();
+    public void addRole(Role role) {
+        roles.add(role);
+    }
 
 }
