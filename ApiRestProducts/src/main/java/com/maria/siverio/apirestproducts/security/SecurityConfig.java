@@ -7,13 +7,14 @@ import com.maria.siverio.apirestproducts.security.service.AuthDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,16 +23,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletResponse;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     //WebSecurityConfigurerAdapter  esta obsoleto, ahora usa dls lambda y HttpSecurity#authorizeHttpRequests
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
+
+    @Value("${spring.h2.console.path}")
+    private String h2ConsolePath;
 
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -41,10 +44,12 @@ public class SecurityConfig {
 
     @Autowired
     private AuthDetailService authDetailService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,7 +58,8 @@ public class SecurityConfig {
         http.csrf().disable()
                 .httpBasic().disable()
                 .cors().and()
-                .authorizeHttpRequests().antMatchers("/auth/login", "/auth/user/create").permitAll()
+                .authorizeHttpRequests().antMatchers("/api/auth/login", "/api/auth/user/create").permitAll()
+                .antMatchers(h2ConsolePath + "/**").permitAll()
                 .antMatchers("/api/product/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated().and()

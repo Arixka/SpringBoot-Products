@@ -1,12 +1,16 @@
 package com.maria.siverio.apirestproducts.users.models;
 
-import com.maria.siverio.apirestproducts.users.dtos.RoleDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -29,15 +33,11 @@ public class User {
     @NotEmpty
     private String password;
 
-    //roles
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_role"
             ))
-    private List<Role> roles= new ArrayList<>();
-    public void addRole(Role role) {
-        roles.add(role);
-    }
+    private Set<Role> roles = new HashSet<>();
 
 }

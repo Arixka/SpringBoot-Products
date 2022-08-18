@@ -30,40 +30,46 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     JwtTokenUtil jwtTokenUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final String tokenFromRequest = request.getHeader("Authorization");
 
-        String userName=null;
-        String encryptedJwtToken=null;
-        String jwtToken=null;
+        String userName = null;
+        String encryptedJwtToken = null;
+        String jwtToken = null;
         logger.debug("Inside JwtRequestFilter doFilterInternal");
+        try {
 
-        if (tokenFromRequest != null && tokenFromRequest.startsWith("Bearer ")) {
-            encryptedJwtToken = tokenFromRequest.substring(7);
-            jwtToken = EncryptionUtil.decrypt(encryptedJwtToken);
-            try {
-                userName = jwtTokenUtil.getUsername(jwtToken);
-            } catch (IllegalArgumentException e) {
-                logger.error("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                logger.error("JWT Token has expired");
+
+            if (tokenFromRequest != null && tokenFromRequest.startsWith("Bearer ")) {
+                encryptedJwtToken = tokenFromRequest.substring(7);
+                jwtToken = EncryptionUtil.decrypt(encryptedJwtToken);
+                try {
+                    userName = jwtTokenUtil.getUsername(jwtToken);
+                } catch (IllegalArgumentException e) {
+                    logger.error("Unable to get JWT Token");
+                } catch (ExpiredJwtException e) {
+                    logger.error("JWT Token has expired");
+                }
+            } else {
+                logger.warn("JWT Token does not begin with Bearer String");
             }
-        } else {
-            logger.warn("JWT Token does not begin with Bearer String");
-        }
 
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authentication
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        }catch (Exception e){
+            logger.error("Cannot set user authentication: {}", e);
         }
         filterChain.doFilter(request, response);
     }
