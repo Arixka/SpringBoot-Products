@@ -16,10 +16,7 @@ const AuthProvider = ({ children }) => {
 	const [authState, dispatch] = useReducer(authReducer, {}, init)
 
 	const login = async (userLogin) => {
-		const action = {
-			type: types.login,
-			payload: userLogin.username,
-		}
+
 		const response = await fetch(BASE_URL, {
 			method: 'POST',
 			headers: {
@@ -31,7 +28,15 @@ const AuthProvider = ({ children }) => {
 			throw new Error('Something went wrong')
 		}
 		const res = await response.json()
+        console.log(res)
+        const action = {
+			type: types.login,
+			payload: userLogin.username,
+            token: res.jwtToken
+		}
+
 		localStorage.setItem('token', JSON.stringify(res.jwtToken))
+
 		dispatch(action)
 	}
 

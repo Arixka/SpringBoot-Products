@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../../auth/context/AuthContext'
 import NewProduct from './NewProduct'
 import ProductItem from './ProductItem'
 import Search from '../Search'
-
 const ProductList = () => {
 	const BASE_URL = 'http://localhost:8080/api/product/all'
 
 	const [products, setProducts] = useState([])
 	const [loading, setLoading] = useState(true)
 	const [listSearch, setListSearch] = useState([])
+	const { token } = useContext(AuthContext)
 
 	const handleSearch = (e) => {
 		filterTable(e.target.value)
@@ -29,12 +30,15 @@ const ProductList = () => {
 	}
 
 	const getProducts = async () => {
+		console.log(token)
 		setLoading(true)
 		try {
 			const response = await fetch(BASE_URL, {
 				method: 'GET',
 				headers: {
+					'Accept': 'application/json',
 					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + token,
 				},
 			})
 
