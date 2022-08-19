@@ -35,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String tokenFromRequest = request.getHeader("Authorization");
 
         String userName = null;
-        String encryptedJwtToken = null;
+        String encryptedJwtToken;
         String jwtToken = null;
         logger.debug("Inside JwtRequestFilter doFilterInternal");
         try {
@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
         }catch (Exception e){
-            logger.error("Cannot set user authentication: {}", e);
+            logger.error("Cannot set user authentication: "+ e);
         }
         filterChain.doFilter(request, response);
     }

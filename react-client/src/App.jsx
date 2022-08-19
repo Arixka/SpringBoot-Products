@@ -1,13 +1,17 @@
 import './App.css'
+import AuthProvider from './auth/context/AuthProvider'
 import Header from './components/Header'
-import ProductList from './components/Product/ProductList'
+
+import AppRouter from './router/AppRouter'
 
 function App() {
 	return (
 		<div className='App'>
-			<Header />
-			<main>			
-				<ProductList />
+			<main>
+				<AuthProvider>
+					<Header />
+					<AppRouter />
+				</AuthProvider>
 			</main>
 		</div>
 	)
