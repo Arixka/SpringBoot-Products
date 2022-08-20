@@ -22,6 +22,14 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
+
+
+    @GetMapping("/all")
+    private ResponseEntity<List<ProductResponseDto>> getAllProducts() {
+        List<ProductResponseDto> productResponse = service.findAll();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productResponse);
+    }
+
     @GetMapping("/all/{status}")
     private ResponseEntity<List<ProductResponseDto>> getAllProductsByStatus(@PathVariable StatusEnum status) {
         List<ProductResponseDto> productsResponse = service.findProductsByStatus(status);
@@ -56,15 +64,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(disabletProduct);
     }
 
-
-    /**
-     * Endpoints para probar la api
-     */
-    @GetMapping("/all")
-    private ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        List<ProductResponseDto> productResponse = service.findAll();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productResponse);
-    }
 
 
 }

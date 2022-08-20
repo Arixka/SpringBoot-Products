@@ -16,6 +16,8 @@ import com.maria.siverio.apirestproducts.users.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 @Slf4j
 public class ProductService implements IProductService {
 
@@ -79,7 +82,7 @@ public class ProductService implements IProductService {
         User creator;
         try {
             if (product.getCreatorUser() != null) {
-                creator = userRepository.findUsersByUsername(product.getCreatorUser().getUsername());
+                creator = userRepository.findByUsername(product.getCreatorUser().getUsername());
                 product.setCreatorUser(creator);
             }
             product.setCreatedAt(LocalDateTime.now());

@@ -1,5 +1,6 @@
 package com.maria.siverio.apirestproducts.security.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
+@Slf4j
 public class EncryptionUtil {
-    private static final Logger logger = LoggerFactory.getLogger(EncryptionUtil.class);
     @Value("${cipher.secret}")
     private static final String SECRET_KEY="hsl43=m/mdYo87%fesSYm2";
     @Value("${cipher.salt}")
@@ -36,7 +37,7 @@ public class EncryptionUtil {
             return Base64.getEncoder()
                     .encodeToString(cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
-            logger.error("Error while encrypting: {}", e.getMessage());
+            log.error("Error while encrypting: {}", e.getMessage());
         }
         return null;
     }
@@ -54,7 +55,7 @@ public class EncryptionUtil {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
         } catch (Exception e) {
-            logger.error("Error while decrypting: {}", e.getMessage());
+            log.error("Error while decrypting: {}", e.getMessage());
         }
         return null;
     }

@@ -3,6 +3,7 @@ package com.maria.siverio.apirestproducts.security.config;
 import com.maria.siverio.apirestproducts.security.util.EncryptionUtil;
 import com.maria.siverio.apirestproducts.security.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,47 +22,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     @Autowired
     UserDetailsService userDetailsService;
     @Autowired
     JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String tokenFromRequest = request.getHeader("Authorization");
+        final String header = request.getHeader("Authorization");
 
         String userName = null;
-        String encryptedJwtToken;
-        String jwtToken = null;
-        logger.debug("Inside JwtRequestFilter doFilterInternal");
+        String authToken;
+        log.debug("Inside JwtRequestFilter doFilterInternal");
         try {
 
+            if (header == null || header.startsWith("Bearer ")) {
+                log.warn("JWT Token does not found in request headers");
+            }
+            authToken = header.substring(7);
 
-            if (tokenFromRequest != null && tokenFromRequest.startsWith("Bearer ")) {
-                encryptedJwtToken = tokenFromRequest.substring(7);
-                jwtToken = EncryptionUtil.decrypt(encryptedJwtToken);
-                try {
-                    userName = jwtTokenUtil.getUsername(jwtToken);
-                } catch (IllegalArgumentException e) {
-                    logger.error("Unable to get JWT Token");
-                } catch (ExpiredJwtException e) {
-                    logger.error("JWT Token has expired");
-                }
-            } else {
-                logger.warn("JWT Token does not begin with Bearer String");
+            try {
+                userName = jwtTokenUtil.getUsername(authToken);
+            } catch (IllegalArgumentException e) {
+                log.error("Unable to get JWT Token");
+            } catch (ExpiredJwtException e) {
+                log.error("JWT Token has expired");
             }
 
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//TODO ERROR AQUI
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
-                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
@@ -70,8 +68,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-        }catch (Exception e){
-            logger.error("Cannot set user authentication: "+ e);
+        } catch (Exception e) {
+            log.error("Cannot set user authentication: " + e);
         }
         filterChain.doFilter(request, response);
     }

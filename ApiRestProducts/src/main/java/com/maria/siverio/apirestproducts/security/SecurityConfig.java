@@ -4,8 +4,7 @@ package com.maria.siverio.apirestproducts.security;
 import com.maria.siverio.apirestproducts.security.config.JwtAuthenticationEntryPoint;
 import com.maria.siverio.apirestproducts.security.config.JwtRequestFilter;
 import com.maria.siverio.apirestproducts.security.service.AuthDetailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,15 +22,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletResponse;
 
-
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     //WebSecurityConfigurerAdapter  esta obsoleto, ahora usa dls lambda y HttpSecurity#authorizeHttpRequests
-
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-
 
     @Value("${spring.h2.console.path}")
     private String h2ConsolePath;
@@ -53,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        logger.debug("SecurityConfig initialized.");
+        log.debug("SecurityConfig initialized.");
 
         http.csrf().disable()
                 .httpBasic().disable()
@@ -82,7 +78,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        logger.debug("AuthenticationManager ");
+        log.debug("AuthenticationManager ");
         return authenticationConfiguration.getAuthenticationManager();
     }
 

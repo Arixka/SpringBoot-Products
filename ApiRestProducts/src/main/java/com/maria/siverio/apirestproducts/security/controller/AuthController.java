@@ -13,6 +13,7 @@ import com.maria.siverio.apirestproducts.users.models.Role;
 import com.maria.siverio.apirestproducts.users.models.User;
 import com.maria.siverio.apirestproducts.users.repositories.RoleRepository;
 import com.maria.siverio.apirestproducts.users.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,16 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private AuthDetailService authDetailService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -56,9 +56,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> createAuthenticationToken(@Valid @RequestBody AuthRequest authRequest) throws Exception {
-// al primer login cambiar la pass?
         authenticate(authRequest.getUsername(), authRequest.getPassword());
-//TODO ERROR no pasa de aqui
+
         UserDetailsImpl userDetails = (UserDetailsImpl)  authDetailService
                 .loadUserByUsername(authRequest.getUsername());
 
@@ -72,7 +71,7 @@ public class AuthController {
 
     @PostMapping("/user/create")
     public ResponseEntity<?> createNewUser(@Valid @RequestBody UserRequest userRequest) throws Exception {
-        logger.info("create user {}", userRequest);
+        log.info("create user {}", userRequest);
 
         User newUser = new User();
         newUser.setUsername(userRequest.getUsername());
@@ -88,7 +87,7 @@ public class AuthController {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            logger.error("---Disabled User---{}", e.getMessage());
+            log.error("---Disabled User---{}", e.getMessage());
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);

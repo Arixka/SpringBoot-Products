@@ -6,9 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Slf4j
+@Transactional
 @NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
@@ -36,9 +40,11 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(User user) {
+
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+        log.info("UserDetails build authorities ");
         return new UserDetailsImpl(
                 user.getIdUser(),
                 user.getUsername(),
