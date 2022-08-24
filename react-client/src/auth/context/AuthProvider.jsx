@@ -1,7 +1,8 @@
 import { useReducer } from 'react'
-import { types } from '../types/types'
 import { AuthContext } from './AuthContext'
 import { authReducer } from './authReducer'
+import { useNavigate } from 'react-router-dom'
+import { types } from '../types/types'
 
 const BASE_URL = 'http://localhost:8080/api/auth/login'
 
@@ -14,9 +15,9 @@ const init = () => {
 }
 const AuthProvider = ({ children }) => {
 	const [authState, dispatch] = useReducer(authReducer, {}, init)
+	const navigate = useNavigate()
 
 	const login = async (userLogin) => {
-
 		const response = await fetch(BASE_URL, {
 			method: 'POST',
 			headers: {
@@ -28,16 +29,15 @@ const AuthProvider = ({ children }) => {
 			throw new Error('Something went wrong')
 		}
 		const res = await response.json()
-        console.log(res)
-        const action = {
+		console.log(res)
+		const action = {
 			type: types.login,
 			payload: userLogin.username,
-            token: res.jwtToken
+			token: res.jwtToken,
 		}
-
 		localStorage.setItem('token', JSON.stringify(res.jwtToken))
-
 		dispatch(action)
+		navigate('/product', { replace: true })
 	}
 
 	const logout = () => {

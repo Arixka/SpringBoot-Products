@@ -55,7 +55,6 @@ const ProductItem = ({ getProducts, product }) => {
 		getProducts()
 	}
 
-	//TODO apatar el ProductForm para editar el producto, no se puede editar el itemcode
 	return (
 		<>
 			<Modal

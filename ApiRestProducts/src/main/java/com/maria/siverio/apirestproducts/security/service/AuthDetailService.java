@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AuthDetailService implements UserDetailsService {
-    //TODO cambiar nombre a UserTedailsSrviceImpl
 
     @Autowired
     private UserRepository userRepository;

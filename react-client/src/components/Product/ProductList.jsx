@@ -30,7 +30,7 @@ const ProductList = () => {
 	}
 
 	const getProducts = async () => {
-		console.log(token)
+		console.log('token useEffect product list ', token)
 		setLoading(true)
 		try {
 			const response = await fetch(BASE_URL, {
@@ -52,7 +52,9 @@ const ProductList = () => {
 	}
 
 	useEffect(() => {
-		getProducts()
+		//TODO obtiene los productos pero el token aun no tiene datos
+		
+		if(token)getProducts()
 	}, [])
 
 	return (

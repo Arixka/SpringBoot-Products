@@ -5,6 +5,8 @@ const Search = ({ handleSearch }) => {
 	}
 
 	return (
+		<>
+		
 		<div className='relative'>
 			<svg
 				xmlns='http://www.w3.org/2000/svg'
@@ -27,6 +29,7 @@ const Search = ({ handleSearch }) => {
 				className='w-full py-3 pl-12 pr-4 text-indigo-500 border rounded-md outline-none focus:bg-white focus:border-indigo-600'
 			/>
 		</div>
+		</>
 	)
 }
 

@@ -56,7 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//TODO ERROR AQUI
+//TODO ERROR AQUI al recargar vista /products pide otra ves los productos y revienta
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
                 if (jwtTokenUtil.validateToken(authToken, userDetails)) {

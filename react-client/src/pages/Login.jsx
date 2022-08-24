@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai'
 import { AuthContext } from '../auth/context/AuthContext'
 
@@ -10,7 +9,7 @@ const Login = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [open, setOpen] = useState(false)
 	const { login } = useContext(AuthContext)
-	const navigate = useNavigate()
+
 
 	const handleChange = (e) => {
 		setLoginForm({
@@ -28,7 +27,6 @@ const Login = () => {
 	}
 	const loginUser = async () => {
 		login(loginForm)
-		navigate('/product', { replace: true })
 	}
 
 	const validateInputs = (values) => {
@@ -53,7 +51,7 @@ const Login = () => {
 		<>
 			<div className='container mx-auto px-4 pt-6 h-full'>
 				<div className='flex content-center items-center justify-center h-full'>
-					<div className='w-full lg:w-4/12 px-4'>
+					<div className='w-full md:w-8/12 lg:w-6/12 px-4'>
 						<div className='relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg 0 border-0'>
 							<div className='rounded-t mb-0 px-6 py-6'>
 								<div className='text-center mb-3'>
